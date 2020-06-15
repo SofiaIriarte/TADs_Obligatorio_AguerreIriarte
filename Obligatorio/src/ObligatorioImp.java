@@ -9,13 +9,12 @@ import java.util.Scanner;
 
 public class ObligatorioImp implements Obligatorio{
 
-    LinkedList books;
-    LinkedList ratings;
-    LinkedList to_read;
+    LinkedList<String[]> books;
+    LinkedList<String[]> ratings;
+    LinkedList<String[]> to_read;
     int sizeBooks;
     int sizeRatings;
     int sizeTo_Read;
-    HeapMax primero;
 
     public void Principal() throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -141,12 +140,12 @@ public class ObligatorioImp implements Obligatorio{
         long tiempoInicio=System.currentTimeMillis();
         int id_libro=0;
         String titulo=null;
-        LinkedList books1 = books;
-        LinkedList to_read1 = to_read;
-        Hash<Integer,LinkedList> h1 = new Hash;
-        for (int i=0,i<sizeTo_Read,i++){
-            int id_book=to_read1.get(i)[1];
-            int id_user=to_read1.get(i)[0];
+        LinkedList<String[]> books1 = books;
+        LinkedList<String[]> to_read1 = to_read;
+        Hash<Integer,LinkedList<String[]>> h1 = new Hash<Integer,LinkedList<String[]>>;
+        for (int i=0;i<sizeTo_Read;i++){
+            int id_book= Integer.parseInt(to_read1.get(i)[1]);
+            int id_user= Integer.parseInt(to_read1.get(i)[0]);
             if (!h1.contains(id_book)){
                 LinkedList id = new LinkedList();
                 id.addFirst(id_user);
@@ -154,8 +153,8 @@ public class ObligatorioImp implements Obligatorio{
             } else if (h1.contains(id_book)) { //como hago para agregar solo si el usuario es!=??
                 LinkedList tryId = h1.find(id_book);
                 boolean addId=true;
-                for (int j=0,j<tryId.size(),j++){
-                    if (j==tryId.get(j)){
+                for (int j=0;j<tryId.getSize();j++){
+                    if (j==Integer.parseInt(String.valueOf(tryId.get(j)))){
                         addId=false;
                     }
                 }
@@ -170,11 +169,11 @@ public class ObligatorioImp implements Obligatorio{
         //ordenar lista desde el size mas grande de id_user hasta el mas chico, pero que sea de largo 10
         //ir desde el primero hasta el decimo con un for, primero tomo el id_book y guardo el largo de tryId, luego,
         // lo busco en la lista books con un for, agarro el titulo que quiero
-        for (int l=0,l<10,l++){
-            int id_book = top10[l][0];
-            int cantidad = top10[l][1].size();
-            for (int i=0,i<sizeBooks,i++){
-                if (id_book==books1.get(i)[0]){
+        for (int l=0;l<9;l++){
+            int id_book = Integer.parseInt(top10[l][0]);
+            int cantidad = Integer.parseInt(top10[l][1].size());
+            for (int i=0;i<sizeBooks;i++){
+                if (id_book==Integer.parseInt(books1.get(i)[0])){
                     titulo=books1.get(i)[5];
                     System.out.println("Id del libro:" + id_book + "Titulo:" + titulo + "Cantidad:" + cantidad);
                 }
@@ -185,36 +184,36 @@ public class ObligatorioImp implements Obligatorio{
         System.out.print("Tiempo de ejecucion de la consulta:"+tiempo);
 
     }
-    public void c2(){
+    public void c2() throws ElementoNoExiste{
         long tiempoInicio=System.currentTimeMillis();
         int id_libro=0;
         String titulo=null;
         LinkedList books1 = books;
         LinkedList to_read1 = to_read;
         Hash<Integer,Integer> h1 = new Hash;
-        for (int i=0,i<sizeTo_Read,i++){
+        for (int i=0;i<sizeTo_Read;i++){
             int counter=0;
-            int id_book=to_read1.get(i)[1];
-            int id_user=to_read1.get(i)[0];
+            int id_book=Integer.parseInt(to_read1.get(i)[1]);
+            int id_user=Integer.parseInt(to_read1.get(i)[0]);
             if (!h1.contains(id_book)){
                 h1.put(id_book,counter++);
             } else if (h1.contains(id_book)) { //como hago para agregar solo si el usuario es!=??
                 Integer newCount = h1.find(id_book);
-                newCount++
+                newCount++;
                 h1.remove(id_book);
                 h1.put(id_book,newCount);
             }
         }
-        LinkedList top20 = new LinkedList();
+        LinkedList<Integer> top20 = new LinkedList();
         //ordenar lista desde el size mas grande de id_user hasta el mas chico, pero que sea de largo 10
         //ir desde el primero hasta el decimo con un for, primero tomo el id_book y guardo el largo de tryId, luego,
         // lo busco en la lista books con un for, agarro el titulo que quiero
-        for (int l=0,l<20,l++){
+        for (int l=0;l<19;l++){
             int id_book = top20[l][0];
             int cantidad = top20[l][1];
-            for (int i=0,i<sizeBooks,i++){
-                if (id_book==books1.get(i)[0]){
-                    titulo=books1.get(i)[5];
+            for (int i=0;i<sizeBooks;i++){
+                if (id_book==Integer.parseInt(books1.get(i)[0])){
+                    titulo=Integer.parseInt(books1.get(i)[5]);
                     System.out.println("Id del libro:" + id_book + "Titulo:" + titulo + "Cantidad:" + cantidad);
                 }
             }
@@ -223,14 +222,52 @@ public class ObligatorioImp implements Obligatorio{
         long tiempo= tiempoFin-tiempoInicio;
         System.out.print("Tiempo de ejecucion de la consulta:"+tiempo);
     }
-    public void c3(){
+    public void c3() throws ElementoNoExiste{
         long tiempoInicio=System.currentTimeMillis();
-        int id_usuario=0;
-        int cantidad=0;
-        int rating_prom=0;
+        LinkedList ratings1 = ratings;
+        Hash<Integer,Integer> h1 = new Hash;
+        for (int i=0;i<sizeRatings;i++){
+            int counter=0;
+            int id_user=Integer.parseInt(ratings1.get(i)[0]);
+            if (!h1.contains(id_user)){
+                h1.put(id_user,counter++);
+            } else if (h1.contains(id_user)) { //como hago para agregar solo si el usuario es!=??
+                Integer newCount = h1.find(id_user);
+                newCount++;
+                h1.remove(id_user);
+                h1.put(id_user,newCount);
+            }
+        }
+        LinkedList<Integer> top10 = new LinkedList();
+        //ordenar lista desde el size mas grande de cantidad hasta el mas chico, pero que sea de largo 10
+        //ir desde el primero hasta el decimo con un for, primero tomo el id_user y voy sumando rating, luego,
+        // lo busco en la lista books con un for, agarro el titulo que quiero
+        int cantidadEva;
+        int id_user;
+        int ratingProm;
+        LinkedList<LinkedList<Integer>> conRating = new LinkedList();
+        for (int l=0;l<9;l++){
+            int id_user = top10[l][0];
+            cantidadEva = top10[l][1];
+            ratingProm=0;
+            for (int i=0;i<sizeRatings;i++){
+                if (id_user==Integer.parseInt(ratings1.get(i)[0])){
+                    ratingProm+=Integer.parseInt(ratings1.get(i)[2]);
+                }
+            }
+            conRating.add([id_user,cantidadEva,ratingProm]);
+        }
+        //ordenar segun 3er atributo la lista conRating
+        for (int m=0;m<conRating.getSize();m++){
+            id_user=conRating.get(m).get(0);
+            cantidadEva=conRating.get(m).get(1);
+            ratingProm=conRating.get(m).get(2);
+            System.out.println("Id del usuario:" + id_user + "Cantidad:" + cantidadEva + "Rating promedio:" + ratingProm);
+        }
+
         long tiempoFin=System.currentTimeMillis();
         long tiempo= tiempoFin-tiempoInicio;
-        System.out.println("Id del usuario:"+id_usuario+"Cantidad:"+cantidad+"Rating promedio:"+rating_prom+"Tiempo de ejecucion de la consulta:"+tiempo);
+        System.out.print("Tiempo de ejecucion de la consulta:"+tiempo);
     }
     public void c4(){
         long tiempoInicio=System.currentTimeMillis();

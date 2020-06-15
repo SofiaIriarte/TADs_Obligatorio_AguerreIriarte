@@ -104,4 +104,7 @@ public class LinkedList<T> implements List<T> {
         add(value);
     }
 
+    public int getSize(){
+        return size;
+    }
 }

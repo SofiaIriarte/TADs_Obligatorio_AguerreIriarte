@@ -7,4 +7,6 @@ public interface List<L> {
     public void remove(int position);
 
     public Object get(int position);
+
+    public int getSize();
 }
