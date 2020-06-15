@@ -1,12 +1,21 @@
+import tads.Hash.ElementoNoExiste;
+import tads.Hash.Hash;
+import tads.Heap.HeapMax;
+import tads.LinkedList.LinkedList;
+
 import java.io.*;
 import java.util.Date;
 import java.util.Scanner;
 
 public class ObligatorioImp implements Obligatorio{
 
-    Scanner books;
-    Scanner ratings;
-    Scanner to_read;
+    LinkedList books;
+    LinkedList ratings;
+    LinkedList to_read;
+    int sizeBooks;
+    int sizeRatings;
+    int sizeTo_Read;
+    HeapMax primero;
 
     public void Principal() throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -34,15 +43,65 @@ public class ObligatorioImp implements Obligatorio{
         String booksFile = "books.csv";
         String ratingsFile = "ratings.csv";
         String to_readFile = "to_read.csv";
-        File bFile = new File(booksFile);
-        File rFile = new File(ratingsFile);
-        File tFile = new File(to_readFile);
+        BufferedReader br = null;
+        BufferedReader br1 = null;
+        BufferedReader br2 = null;
+        String line = "";
+        String cvsSplitBy = ",";
+        //File bFile = new File(booksFile);
+        //File rFile = new File(ratingsFile);
+        //File tFile = new File(to_readFile);
         try {
-            Scanner books = new Scanner(bFile);
-            Scanner ratings = new Scanner(rFile);
-            Scanner to_read = new Scanner(tFile);
+            br = new BufferedReader(new FileReader(booksFile));
+            while ((line = br.readLine()) != null) {
+                String[] datos = line.split(cvsSplitBy);
+                books.add(datos);
+                sizeBooks++;
+                //hacerme una lista, ver cual me quedaria mejor
+                //Imprime datos.
+                //System.out.println(datos[0] + ", " + datos[1] + ", " + datos[2] + ", " + datos[3] + ", " + datos[4] + ", " + datos[5]);
+            }
+            br1 = new BufferedReader(new FileReader(ratingsFile));
+            while ((line = br.readLine()) != null) {
+                String[] datos = line.split(cvsSplitBy);
+                ratings.add(datos);
+                sizeRatings++;
+            }
+            br2 = new BufferedReader(new FileReader(to_readFile));
+            while ((line = br.readLine()) != null) {
+                String[] datos = line.split(cvsSplitBy);
+                to_read.add(datos);
+                sizeTo_Read++;
+            }
+            //Scanner books = new Scanner(bFile);
+            //Scanner ratings = new Scanner(rFile);
+            //Scanner to_read = new Scanner(tFile);
         } catch (FileNotFoundException e){
-            System.out.print("No se han podido cargar los datos, intente de nuevo");
+            System.out.print("Error al cargar los datos, intente de nuevo");
+        } catch (IOException e) {
+            System.out.print("Error al cargar los datos, intente de nuevo");
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    System.out.print("Error al finalizar la carga de datos");
+                }
+            }
+            else if (br1 != null) {
+                try {
+                    br1.close();
+                } catch (IOException e) {
+                    System.out.print("Error al finalizar la carga de datos");
+                }
+            }
+            else if (br2 != null) {
+                try {
+                    br2.close();
+                } catch (IOException e) {
+                    System.out.print("Error al finalizar la carga de datos");
+                }
+            }
         }
         long tiempoFin=System.currentTimeMillis();
         long tiempo= tiempoFin-tiempoInicio;
@@ -78,23 +137,91 @@ public class ObligatorioImp implements Obligatorio{
         }
     }
 
-    public void c1(){
+    public void c1() throws ElementoNoExiste {
         long tiempoInicio=System.currentTimeMillis();
         int id_libro=0;
         String titulo=null;
-        int cantidad=0;
+        LinkedList books1 = books;
+        LinkedList to_read1 = to_read;
+        Hash<Integer,LinkedList> h1 = new Hash;
+        for (int i=0,i<sizeTo_Read,i++){
+            int id_book=to_read1.get(i)[1];
+            int id_user=to_read1.get(i)[0];
+            if (!h1.contains(id_book)){
+                LinkedList id = new LinkedList();
+                id.addFirst(id_user);
+                h1.put(id_book,id);
+            } else if (h1.contains(id_book)) { //como hago para agregar solo si el usuario es!=??
+                LinkedList tryId = h1.find(id_book);
+                boolean addId=true;
+                for (int j=0,j<tryId.size(),j++){
+                    if (j==tryId.get(j)){
+                        addId=false;
+                    }
+                }
+                if (addId==true){
+                    tryId.add(id_user);
+                    h1.remove(id_book);
+                    h1.put(id_book,tryId);
+                }
+            }
+        }
+        LinkedList top10 = new LinkedList();
+        //ordenar lista desde el size mas grande de id_user hasta el mas chico, pero que sea de largo 10
+        //ir desde el primero hasta el decimo con un for, primero tomo el id_book y guardo el largo de tryId, luego,
+        // lo busco en la lista books con un for, agarro el titulo que quiero
+        for (int l=0,l<10,l++){
+            int id_book = top10[l][0];
+            int cantidad = top10[l][1].size();
+            for (int i=0,i<sizeBooks,i++){
+                if (id_book==books1.get(i)[0]){
+                    titulo=books1.get(i)[5];
+                    System.out.println("Id del libro:" + id_book + "Titulo:" + titulo + "Cantidad:" + cantidad);
+                }
+            }
+        }
         long tiempoFin=System.currentTimeMillis();
         long tiempo= tiempoFin-tiempoInicio;
-        System.out.println("Id del libro:"+id_libro+"Titulo:"+titulo+"Cantidad:"+cantidad+"Tiempo de ejecucion de la consulta:"+tiempo);
+        System.out.print("Tiempo de ejecucion de la consulta:"+tiempo);
+
     }
     public void c2(){
         long tiempoInicio=System.currentTimeMillis();
         int id_libro=0;
         String titulo=null;
-        int cantidad=0;
+        LinkedList books1 = books;
+        LinkedList to_read1 = to_read;
+        Hash<Integer,Integer> h1 = new Hash;
+        for (int i=0,i<sizeTo_Read,i++){
+            int counter=0;
+            int id_book=to_read1.get(i)[1];
+            int id_user=to_read1.get(i)[0];
+            if (!h1.contains(id_book)){
+                h1.put(id_book,counter++);
+            } else if (h1.contains(id_book)) { //como hago para agregar solo si el usuario es!=??
+                Integer newCount = h1.find(id_book);
+                newCount++
+                h1.remove(id_book);
+                h1.put(id_book,newCount);
+            }
+        }
+        LinkedList top20 = new LinkedList();
+        //ordenar lista desde el size mas grande de id_user hasta el mas chico, pero que sea de largo 10
+        //ir desde el primero hasta el decimo con un for, primero tomo el id_book y guardo el largo de tryId, luego,
+        // lo busco en la lista books con un for, agarro el titulo que quiero
+        for (int l=0,l<20,l++){
+            int id_book = top20[l][0];
+            int cantidad = top20[l][1];
+            for (int i=0,i<sizeBooks,i++){
+                if (id_book==books1.get(i)[0]){
+                    titulo=books1.get(i)[5];
+                    System.out.println("Id del libro:" + id_book + "Titulo:" + titulo + "Cantidad:" + cantidad);
+                }
+            }
+        }
         long tiempoFin=System.currentTimeMillis();
         long tiempo= tiempoFin-tiempoInicio;
-        System.out.println("Id del libro:"+id_libro+"Titulo:"+titulo+"Cantidad:"+cantidad+"Tiempo de ejecucion de la consulta:"+tiempo);
+        System.out.print("Tiempo de ejecucion de la consulta:"+tiempo);
     }
     public void c3(){
         long tiempoInicio=System.currentTimeMillis();
