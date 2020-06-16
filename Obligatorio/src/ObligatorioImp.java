@@ -1,9 +1,11 @@
 import tads.Hash.ElementoNoExiste;
 import tads.Hash.Hash;
 import tads.Heap.HeapMax;
+import tads.Heap.KeyYaExiste;
 import tads.LinkedList.LinkedList;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -120,11 +122,23 @@ public class ObligatorioImp implements Obligatorio{
         int numero = Integer.parseInt(opcion);
         switch (numero){
             case 1:
-                c1();
+                try {
+                    c1();
+                } catch (KeyYaExiste k){
+                    System.out.print("No es posible realizar esta consulta");
+                }
             case 2:
-                c2();
+                try {
+                    c2();
+                } catch (KeyYaExiste k){
+                    System.out.print("No es posible realizar esta consulta");
+                }
             case 3:
-                c3();
+                try {
+                    c3();
+                } catch (KeyYaExiste k){
+                    System.out.print("No es posible realizar esta consulta");
+                }
             case 4:
                 c4();
             case 5:
@@ -136,42 +150,39 @@ public class ObligatorioImp implements Obligatorio{
         }
     }
 
-    public void c1() throws ElementoNoExiste {
+    public void c1() throws KeyYaExiste {
         long tiempoInicio=System.currentTimeMillis();
-        int id_libro=0;
         String titulo=null;
         LinkedList<String[]> books1 = books;
         LinkedList<String[]> to_read1 = to_read;
-        Hash<Integer,LinkedList<String[]>> h1 = new Hash<Integer,LinkedList<String[]>>;
+        HeapMax<Integer,LinkedList<Integer>> heap1 = new HeapMax(sizeTo_Read);
         for (int i=0;i<sizeTo_Read;i++){
-            int id_book= Integer.parseInt(to_read1.get(i)[1]);
-            int id_user= Integer.parseInt(to_read1.get(i)[0]);
-            if (!h1.contains(id_book)){
-                LinkedList id = new LinkedList();
-                id.addFirst(id_user);
-                h1.put(id_book,id);
-            } else if (h1.contains(id_book)) { //como hago para agregar solo si el usuario es!=??
-                LinkedList tryId = h1.find(id_book);
+            String[] hola = to_read1.get(i);
+            int id_book= Integer.parseInt(hola[1]);
+            int id_user= Integer.parseInt(hola[0]);
+            LinkedList users = new LinkedList();
+            users.addFirst(id_book);
+            users.add(id_user);
+            try {
+                heap1.agregar(id_book,users);
+            } catch (KeyYaExiste k) {
+                users = (LinkedList) heap1.obtenerYEliminar(); // como hago para que aca me elimine el que yo quiero y no el primero??
                 boolean addId=true;
-                for (int j=0;j<tryId.getSize();j++){
-                    if (j==Integer.parseInt(String.valueOf(tryId.get(j)))){
+                for (int j=1;j<users.getSize();j++){
+                    if (j==Integer.parseInt(String.valueOf(users.get(j)))){
                         addId=false;
                     }
                 }
                 if (addId==true){
-                    tryId.add(id_user);
-                    h1.remove(id_book);
-                    h1.put(id_book,tryId);
+                    users.add(id_user);
+                    heap1.agregar(id_book,users);
                 }
             }
         }
-        LinkedList top10 = new LinkedList();
-        //ordenar lista desde el size mas grande de id_user hasta el mas chico, pero que sea de largo 10
-        //ir desde el primero hasta el decimo con un for, primero tomo el id_book y guardo el largo de tryId, luego,
-        // lo busco en la lista books con un for, agarro el titulo que quiero
         for (int l=0;l<9;l++){
-            int id_book = Integer.parseInt(top10[l][0]);
-            int cantidad = Integer.parseInt(top10[l][1].size());
+            LinkedList<Integer> datos = heap1.obtenerYEliminar();
+            int id_book = datos.get(0);
+            int cantidad = datos.getSize();
             for (int i=0;i<sizeBooks;i++){
                 if (id_book==Integer.parseInt(books1.get(i)[0])){
                     titulo=books1.get(i)[5];
@@ -184,36 +195,40 @@ public class ObligatorioImp implements Obligatorio{
         System.out.print("Tiempo de ejecucion de la consulta:"+tiempo);
 
     }
-    public void c2() throws ElementoNoExiste{
+    public void c2() throws KeyYaExiste{
         long tiempoInicio=System.currentTimeMillis();
-        int id_libro=0;
         String titulo=null;
         LinkedList books1 = books;
         LinkedList to_read1 = to_read;
-        Hash<Integer,Integer> h1 = new Hash;
+        HeapMax<Integer,LinkedList<Integer>> heap2 = new HeapMax(sizeTo_Read);
         for (int i=0;i<sizeTo_Read;i++){
-            int counter=0;
-            int id_book=Integer.parseInt(to_read1.get(i)[1]);
-            int id_user=Integer.parseInt(to_read1.get(i)[0]);
-            if (!h1.contains(id_book)){
-                h1.put(id_book,counter++);
-            } else if (h1.contains(id_book)) { //como hago para agregar solo si el usuario es!=??
-                Integer newCount = h1.find(id_book);
-                newCount++;
-                h1.remove(id_book);
-                h1.put(id_book,newCount);
+            int counter=1;
+            String[] hola = (String[]) to_read1.get(i);
+            int id_book= Integer.parseInt(hola[1]);
+            LinkedList<Integer> datos = null;
+            datos.addFirst(id_book);
+            datos.add(counter);
+            try {
+                heap2.agregar(id_book, datos);
+            } catch (KeyYaExiste k){
+                LinkedList<Integer> newDatos = heap2.obtenerYEliminar();
+                int id_bookNew = newDatos.get(0);
+                int counterNew = newDatos.get(1);
+                counterNew++;
+                LinkedList<Integer> datosNew=null;
+                datosNew.addFirst(id_bookNew);
+                datos.add(counterNew);
+                heap2.agregar(id_bookNew,datosNew);
             }
         }
-        LinkedList<Integer> top20 = new LinkedList();
-        //ordenar lista desde el size mas grande de id_user hasta el mas chico, pero que sea de largo 10
-        //ir desde el primero hasta el decimo con un for, primero tomo el id_book y guardo el largo de tryId, luego,
-        // lo busco en la lista books con un for, agarro el titulo que quiero
         for (int l=0;l<19;l++){
-            int id_book = top20[l][0];
-            int cantidad = top20[l][1];
+            LinkedList<Integer> datos = heap2.obtenerYEliminar();
+            int id_book = datos.get(0);
+            int cantidad = datos.get(1);
             for (int i=0;i<sizeBooks;i++){
-                if (id_book==Integer.parseInt(books1.get(i)[0])){
-                    titulo=Integer.parseInt(books1.get(i)[5]);
+                String[] hola1 = (String[]) books1.get(i);
+                if (id_book==Integer.parseInt(hola1[0])){
+                    titulo=hola1[5];
                     System.out.println("Id del libro:" + id_book + "Titulo:" + titulo + "Cantidad:" + cantidad);
                 }
             }
@@ -222,47 +237,59 @@ public class ObligatorioImp implements Obligatorio{
         long tiempo= tiempoFin-tiempoInicio;
         System.out.print("Tiempo de ejecucion de la consulta:"+tiempo);
     }
-    public void c3() throws ElementoNoExiste{
+    public void c3() throws KeyYaExiste{
         long tiempoInicio=System.currentTimeMillis();
         LinkedList ratings1 = ratings;
-        Hash<Integer,Integer> h1 = new Hash;
+        HeapMax<Integer,LinkedList<Integer>> heap3 = new HeapMax(sizeTo_Read);
         for (int i=0;i<sizeRatings;i++){
             int counter=0;
-            int id_user=Integer.parseInt(ratings1.get(i)[0]);
-            if (!h1.contains(id_user)){
-                h1.put(id_user,counter++);
-            } else if (h1.contains(id_user)) { //como hago para agregar solo si el usuario es!=??
-                Integer newCount = h1.find(id_user);
-                newCount++;
-                h1.remove(id_user);
-                h1.put(id_user,newCount);
+            String[] hola= (String[]) ratings1.get(i);
+            int id_user=Integer.parseInt(hola[0]);
+            LinkedList<Integer> datos = new LinkedList<>();
+            datos.addFirst(id_user);
+            datos.add(counter);
+            try {
+                heap3.agregar(id_user,datos);
+            } catch (KeyYaExiste k){
+                LinkedList<Integer> newDatos = heap3.obtenerYEliminar();
+                int id_userNew = newDatos.get(0);
+                int counterNew = newDatos.get(1);
+                counterNew++;
+                LinkedList<Integer> datosNew=null;
+                datosNew.addFirst(id_userNew);
+                datos.add(counterNew);
+                heap3.agregar(id_userNew,datosNew);
             }
         }
-        LinkedList<Integer> top10 = new LinkedList();
-        //ordenar lista desde el size mas grande de cantidad hasta el mas chico, pero que sea de largo 10
-        //ir desde el primero hasta el decimo con un for, primero tomo el id_user y voy sumando rating, luego,
-        // lo busco en la lista books con un for, agarro el titulo que quiero
         int cantidadEva;
-        int id_user;
         int ratingProm;
-        LinkedList<LinkedList<Integer>> conRating = new LinkedList();
+        HeapMax<Integer,LinkedList<Integer>> conRating = new HeapMax(9);
         for (int l=0;l<9;l++){
-            int id_user = top10[l][0];
-            cantidadEva = top10[l][1];
+            LinkedList<Integer> extraccion;
+            extraccion = heap3.obtenerYEliminar();
+            int id_userNew = extraccion.get(0);
+            cantidadEva = extraccion.get(1);
             ratingProm=0;
             for (int i=0;i<sizeRatings;i++){
-                if (id_user==Integer.parseInt(ratings1.get(i)[0])){
-                    ratingProm+=Integer.parseInt(ratings1.get(i)[2]);
+                String[] hola1 = (String[]) ratings1.get(i);
+                if (id_userNew==Integer.parseInt(hola1[0])){
+                    ratingProm+=Integer.parseInt(hola1[2]);
                 }
             }
-            conRating.add([id_user,cantidadEva,ratingProm]);
+            LinkedList nuevo = new LinkedList();
+            nuevo.addFirst(id_userNew);
+            nuevo.addFirst(cantidadEva);
+            nuevo.add(ratingProm);
+            conRating.agregar(id_userNew,nuevo);
         }
         //ordenar segun 3er atributo la lista conRating
         for (int m=0;m<conRating.getSize();m++){
-            id_user=conRating.get(m).get(0);
-            cantidadEva=conRating.get(m).get(1);
-            ratingProm=conRating.get(m).get(2);
-            System.out.println("Id del usuario:" + id_user + "Cantidad:" + cantidadEva + "Rating promedio:" + ratingProm);
+            LinkedList<Integer> ultima;
+            ultima = conRating.obtenerYEliminar();
+            int idUser = ultima.get(0);
+            cantidadEva = ultima.get(1);
+            ratingProm=ultima.get(2);
+            System.out.println("Id del usuario:" + idUser + "Cantidad:" + cantidadEva + "Rating promedio:" + ratingProm);
         }
 
         long tiempoFin=System.currentTimeMillis();
