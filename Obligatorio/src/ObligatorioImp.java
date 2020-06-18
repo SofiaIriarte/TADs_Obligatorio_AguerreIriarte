@@ -182,7 +182,7 @@ public class ObligatorioImp implements Obligatorio{
         for (int l=0;l<9;l++){
             LinkedList<Integer> datos = heap1.obtenerYEliminar();
             int id_book = datos.get(0);
-            int cantidad = datos.getSize();
+            int cantidad = datos.getSize()-1;
             for (int i=0;i<sizeBooks;i++){
                 if (id_book==Integer.parseInt(books1.get(i)[0])){
                     titulo=books1.get(i)[5];
@@ -211,7 +211,7 @@ public class ObligatorioImp implements Obligatorio{
             try {
                 heap2.agregar(id_book, datos);
             } catch (KeyYaExiste k){
-                LinkedList<Integer> newDatos = heap2.obtenerYEliminar();
+                LinkedList<Integer> newDatos = heap2.obtenerYEliminar(); // como se que quito el que quiero?
                 int id_bookNew = newDatos.get(0);
                 int counterNew = newDatos.get(1);
                 counterNew++;
@@ -251,7 +251,7 @@ public class ObligatorioImp implements Obligatorio{
             try {
                 heap3.agregar(id_user,datos);
             } catch (KeyYaExiste k){
-                LinkedList<Integer> newDatos = heap3.obtenerYEliminar();
+                LinkedList<Integer> newDatos = heap3.obtenerYEliminar(); //como se que elimino el que quiero??
                 int id_userNew = newDatos.get(0);
                 int counterNew = newDatos.get(1);
                 counterNew++;
