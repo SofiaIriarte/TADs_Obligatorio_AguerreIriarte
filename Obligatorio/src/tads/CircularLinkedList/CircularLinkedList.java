@@ -1,6 +1,6 @@
 package tads.CircularLinkedList;
 
-import LinkedList.Nodo;
+//import LinkedList.Nodo;
 
 public class CircularLinkedList<T> {
     private NodoDouble<T> primero;

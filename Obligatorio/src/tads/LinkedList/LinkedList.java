@@ -17,7 +17,7 @@ public class LinkedList<T> implements List<T> {
         }
         else{
             nuevo.setPrevious(this.last);
-            this.last.setNext(nuevo);
+            //this.last.setNext(nuevo);
             this.last = nuevo;
         }
         size++;

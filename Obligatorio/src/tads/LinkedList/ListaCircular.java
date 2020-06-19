@@ -25,7 +25,7 @@ public class ListaCircular<T> implements List<T> {
         size++;
     }
 
-    public void removeRound(int position){
+    /*public void remove(int position){
 
         while(position<0){
             position = position + size;
@@ -37,7 +37,7 @@ public class ListaCircular<T> implements List<T> {
 
         remove(position);
 
-    }
+    }*/
 
     public void remove(int position) {
 
@@ -115,4 +115,9 @@ public class ListaCircular<T> implements List<T> {
         }
         return value;
     }
+
+    public int getSize(){
+        return size;
+    }
 }
+
