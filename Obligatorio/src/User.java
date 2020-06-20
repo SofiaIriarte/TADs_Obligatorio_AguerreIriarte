@@ -7,32 +7,16 @@ import java.io.IOException;
 public class User {
 
     private long user_id;
-    private BufferedReader br = null;
-    private String to_ReadFile = "src\\docs\\to_read.csv";
-    private String line = "";
-    private String cvsSplitBy = ",";
 
-    public LinkedList cargaUsers() throws IOException {
-        LinkedList user = new LinkedList();
-        try {
-            br = new BufferedReader(new FileReader(to_ReadFile));
-            line=br.readLine();
-            String[] datos = line.split(cvsSplitBy);
-            user_id= Long.parseLong(datos[0]);
-            user.addFirst(user_id);
-            line=br.readLine();
-            while (line != null) {
-                datos = line.split(cvsSplitBy);
-                user_id= Long.parseLong(datos[0]);
-                user.add(user_id);
-                line=br.readLine();
-            }
-        } catch (IOException e) {
-            System.out.print("Error al cargar los usuarios, intente de nuevo");
-        }
-        br.close();
-        return user;
+    public User(long user_id) {
+        this.user_id = user_id;
     }
 
+    public long getUser_id() {
+        return user_id;
+    }
 
+    public void setUser_id(long user_id) {
+        this.user_id = user_id;
+    }
 }

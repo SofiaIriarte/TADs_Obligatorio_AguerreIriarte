@@ -14,15 +14,28 @@ public class CargaDeDatos {
     private String line = "";
     private String cvsSplitBy = ",";
 
-    public LinkedList<String> cargaBooks(LinkedList<String> books) throws IOException{
+    public LinkedList<Book> cargaBooks() throws IOException{
+        int contador=0;
+        LinkedList<Book> books = new LinkedList<>();
         try {
             br = new BufferedReader(new FileReader(booksFile));
             line=br.readLine();
-            String[] datos = line.split(cvsSplitBy);
-            books.addFirst(Arrays.toString(datos));
+            line=br.readLine();
             while (line != null) {
-                datos = line.split(cvsSplitBy);
-                books.add(Arrays.toString(datos));
+                if (!(line.contains(",\"nan\"")||  line.contains(",NaN")||  line.contains(",nan"))){
+                    String[] datos = identificadorDeComas(line);
+                    Author[] authors = new Author[datos.length - 7];//Resto 7 porque es la cantidad de datos que tienen cantidad fija. (No son autores)
+                    int position = 0;
+                    int i;
+                    for (i = 2; i < 2 + authors.length; i++) {
+                        authors[position] = new Author(datos[i]);
+                        position++;
+                    }
+                    Book libro = new Book(Long.parseLong(datos[0]), datos[1], authors, Integer.parseInt(datos[i]), datos[i + 1], datos[i + 2], datos[i + 3], datos[i] + 4);
+                    books.add(libro);
+                    contador++;
+                    System.out.println(contador);
+                }
                 line=br.readLine();
             }
         } catch (IOException e) {
@@ -36,7 +49,7 @@ public class CargaDeDatos {
             br = new BufferedReader(new FileReader(ratingsFile));
             line=br.readLine();
             while (line != null) {
-                String[] datos = line.split(cvsSplitBy);
+                String[] datos = identificadorDeComas(line);
                 ratings.add(datos);
                 line=br.readLine();
             }
@@ -51,7 +64,7 @@ public class CargaDeDatos {
             br = new BufferedReader(new FileReader(to_readFile));
             line=br.readLine();
             while (line != null) {
-                String[] datos = line.split(cvsSplitBy);
+                String[] datos = identificadorDeComas(line);
                 to_read.add(datos);
                 line=br.readLine();
             }
@@ -60,6 +73,35 @@ public class CargaDeDatos {
         }
         //br.close();
         return to_read;
+    }
+
+    private String[] identificadorDeComas(String renglon){
+        int cantidad=0;
+        boolean hayComilla= false;
+        String[] datosSeparados= new String[8];
+        String aux="";
+        for (int i=0;i<renglon.length();i++){
+            char caracter=renglon.charAt(i);
+            if (caracter=='"'|| caracter==','){
+                if (caracter=='"'){
+                    hayComilla=!hayComilla;
+                }
+                if (!hayComilla && caracter==','){
+                    if (datosSeparados.length < cantidad + 1) {// +1 pa que no de null pointer en comparacion de hijos
+                        String[] array2 = Arrays.copyOf(datosSeparados, datosSeparados.length + 1);
+                        datosSeparados = array2;
+                    }
+                    datosSeparados[cantidad]=aux;
+                    aux="";
+                    cantidad++;
+                }
+            }
+            else{
+                aux=aux+caracter;
+            }
+        }
+        datosSeparados[cantidad]=aux;//para que agregue el útlimo sin dar error
+        return datosSeparados;
     }
 
 }

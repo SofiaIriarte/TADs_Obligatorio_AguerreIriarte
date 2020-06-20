@@ -6,7 +6,7 @@ import java.util.Date;
 
 public class Consultas {
 
-    public void c1(LinkedList<String[]> to_read, int sizeTo_Read, LinkedList<String> books, int sizeBooks) throws KeyYaExiste {
+    public void c1(LinkedList<String[]> to_read, int sizeTo_Read, LinkedList<Book> books, int sizeBooks) throws KeyYaExiste {
         long tiempoInicio=System.currentTimeMillis();
         String titulo=null;
         LinkedList<String[]> to_read1=to_read;
@@ -38,12 +38,12 @@ public class Consultas {
             LinkedList<Integer> datos = heap1.obtenerYEliminar();
             int id_book = datos.get(0);
             int cantidad = datos.getSize();
-            LinkedList<String> books1=books;
+            LinkedList<Book> books1=books;
             for (int i=0;i<sizeBooks;i++){
-                if (id_book==Integer.parseInt(books1.get(i))){ //[0]
-                    titulo=books1.get(i); //[5]
-                    System.out.println("Id del libro:" + id_book + "Titulo:" + titulo + "Cantidad:" + cantidad);
-                }
+                // if (id_book==Integer.parseInt(books1.get(i))){ //[0]
+                //    titulo=books1.get(i); //[5]
+                System.out.println("Id del libro:" + id_book + "Titulo:" + titulo + "Cantidad:" + cantidad);
+                //  }
             }
         }
         long tiempoFin=System.currentTimeMillis();
@@ -51,7 +51,7 @@ public class Consultas {
         System.out.print("Tiempo de ejecucion de la consulta:"+tiempo);
 
     }
-    public void c2(LinkedList<String[]> to_read, int sizeTo_Read, LinkedList<String> books, int sizeBooks) throws KeyYaExiste {
+    public void c2(LinkedList<String[]> to_read, int sizeTo_Read, LinkedList<Book> books, int sizeBooks) throws KeyYaExiste {
         long tiempoInicio=System.currentTimeMillis();
         String titulo=null;
         LinkedList books1 = books;
