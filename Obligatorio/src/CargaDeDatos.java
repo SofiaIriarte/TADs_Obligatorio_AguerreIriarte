@@ -34,7 +34,7 @@ public class CargaDeDatos {
                     Book libro = new Book(Long.parseLong(datos[0]), datos[1], authors, Integer.parseInt(datos[i]), datos[i + 1], datos[i + 2], datos[i + 3], datos[i] + 4);
                     books.add(libro);
                     contador++;
-                    System.out.println(contador);
+                    //System.out.println(contador);
                 }
                 line=br.readLine();
             }
@@ -44,34 +44,63 @@ public class CargaDeDatos {
         br.close();
         return books;
     }
-    public LinkedList<String[]> cargaRatings(LinkedList<String[]> ratings) throws IOException{
+    public LinkedList<Rating> cargaRatings() throws IOException{
+        int contador=0;
+        LinkedList<Rating> ratings = new LinkedList<>();
         try {
             br = new BufferedReader(new FileReader(ratingsFile));
             line=br.readLine();
+            line=br.readLine();
             while (line != null) {
-                String[] datos = identificadorDeComas(line);
-                ratings.add(datos);
+                if (!(line.contains(",\"nan\"")||  line.contains(",NaN")||  line.contains(",nan"))){
+                    String[] datos = identificadorDeComas(line);
+                    int rating= Integer.parseInt(datos[0]);
+                    long id_user= Long.parseLong(datos[1]);
+                    int book_id= Integer.parseInt(datos[2]);
+                    Rating ratingAdd = new Rating();
+                    ratingAdd.setBook_id(book_id);
+                    ratingAdd.setUser_id(id_user);
+                    ratingAdd.setRating(rating);
+                    ratings.add(ratingAdd);
+                    contador++;
+                }
                 line=br.readLine();
             }
         } catch (IOException e) {
             System.out.print("Error al cargar los datos, intente de nuevo");
         }
-        //br.close();
+        br.close();
         return ratings;
     }
-    public LinkedList<String[]> cargaTo_Read(LinkedList<String[]> to_read) throws IOException{
+    public LinkedList<Book> cargaTo_Read(LinkedList<Book> book) throws IOException{
+        int contador=0;
+        LinkedList<Book> to_read = new LinkedList<>();
+        LinkedList<User> userList=new LinkedList<>();
         try {
             br = new BufferedReader(new FileReader(to_readFile));
             line=br.readLine();
+            line=br.readLine();
             while (line != null) {
-                String[] datos = identificadorDeComas(line);
-                to_read.add(datos);
+                if (!(line.contains(",\"nan\"")||  line.contains(",NaN")||  line.contains(",nan"))){
+                    String[] datos = identificadorDeComas(line);
+                    long id_user= Long.parseLong(datos[0]);
+                    User user=new User(id_user);
+                    user.setUser_id(id_user);
+                    userList.add(user);
+                    long book_id= Long.parseLong(datos[1]);
+                    /*for (int i=0;i<book.getSize();i++) {
+                        if (book_id==book.get(i).getBook_id()){
+                            book.get(i).setReserved_to_read(userList);
+                        }
+                    }*/
+                    contador++;
+                }
                 line=br.readLine();
             }
         } catch (IOException e) {
             System.out.print("Error al cargar los datos, intente de nuevo");
         }
-        //br.close();
+        br.close();
         return to_read;
     }
 

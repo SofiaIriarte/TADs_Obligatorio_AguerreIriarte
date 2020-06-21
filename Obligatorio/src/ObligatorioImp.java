@@ -12,13 +12,13 @@ import java.util.Scanner;
 public class ObligatorioImp implements Obligatorio{
 
     private static LinkedList<Book> books = new LinkedList();
-    private static LinkedList<String[]> ratings = new LinkedList();
-    private static LinkedList<String[]> to_read = new LinkedList();
+    private static LinkedList<Rating> ratings = new LinkedList();
+    private static LinkedList<Book> to_read = new LinkedList();
+    static Scanner br = new Scanner(System.in);
 
     public static void main(String[] args)throws IOException,KeyYaExiste{
         Principal();
     }
-    static Scanner br = new Scanner(System.in);
 
     public static void Principal() throws IOException,KeyYaExiste{
         System.out.print("Menu:\nSeleccione la opcion que desee:\n\t" +
@@ -26,30 +26,34 @@ public class ObligatorioImp implements Obligatorio{
                 "2. Ejecutar consultas\n\t" +
                 "3. Salir\n");
         int numero = br.nextInt();
-        switch (numero){
-            case 1:
+        //switch (numero){
+            if(numero==1) {//case 1:
                 long tiempoInicio=System.currentTimeMillis();
                 CargaDeDatos temp= new CargaDeDatos();
                 books=temp.cargaBooks();
+                ratings=temp.cargaRatings();
+                to_read=temp.cargaTo_Read(books);
                 long tiempoFin=System.currentTimeMillis();
-                ratings=temp.cargaRatings(ratings);
-                to_read=temp.cargaTo_Read(to_read);
                 long tiempo= tiempoFin-tiempoInicio;
                 System.out.print("Carga de datos exitosa, tiempo de ejecución de la carga:" + tiempo + " ms\n");
-                Principal();
-            case 2:
-                try {
+                Principal();}
+            //case 2:
+              if(numero==2){  try {
+                    System.out.print("55");
                     consultas();
                 } catch (IOException i) {
                     System.out.print("");
                 } catch (KeyYaExiste k) {
                     System.out.print("");
-                }
-                consultas();
-            case 3:
-                break;
-        }
+                }}
+            //case 3:
+              if(numero!=1&&numero!=2&&numero!=3) {
+                  System.out.print("Opcion no valida, intente nuevamente");
+                  Principal();
+              }
 
+
+        //}
     }
 
 

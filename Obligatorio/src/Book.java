@@ -15,7 +15,7 @@ public class Book {
     private String title;
     private String language_code;
     private String image_url;
-    private User[] reserved_to_read;
+    private LinkedList<User> reserved_to_read;
 
     public Book(long book_id, String isbn, Author[] author, int original_privation_year, String original_title, String title, String language_code, String image_url) {
         this.book_id = book_id;
@@ -95,11 +95,11 @@ public class Book {
         this.image_url = image_url;
     }
 
-    public User[] getReserved_to_read() {
+    public LinkedList<User> getReserved_to_read() {
         return reserved_to_read;
     }
 
-    public void setReserved_to_read(User[] reserved_to_read) {
+    public void setReserved_to_read(LinkedList<User> reserved_to_read) {
         this.reserved_to_read = reserved_to_read;
     }
 }

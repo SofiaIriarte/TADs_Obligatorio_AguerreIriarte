@@ -2,22 +2,24 @@ import tads.Heap.HeapMax;
 import tads.Heap.KeyYaExiste;
 import tads.LinkedList.LinkedList;
 
+import java.io.IOException;
 import java.util.Date;
 
 public class Consultas {
 
-    public void c1(LinkedList<String[]> to_read, int sizeTo_Read, LinkedList<Book> books, int sizeBooks) throws KeyYaExiste {
+    public void c1(LinkedList<Book> to_read, int sizeTo_Read, LinkedList<Book> books, int sizeBooks) throws KeyYaExiste {
         long tiempoInicio=System.currentTimeMillis();
         String titulo=null;
-        LinkedList<String[]> to_read1=to_read;
-        HeapMax<Integer, LinkedList<Integer>> heap1 = new HeapMax(sizeTo_Read);
+        LinkedList<Book> to_read1=to_read;
+        HeapMax<Long, LinkedList<Integer>> heap1 = new HeapMax(sizeTo_Read);
         for (int i=0;i<sizeTo_Read;i++){
-            String[] hola = to_read1.get(i);
-            int id_book= Integer.parseInt(hola[1]);
-            int id_user= Integer.parseInt(hola[0]);
+            Book hola = to_read1.get(i);
+            long id_book= hola.getBook_id();
+            LinkedList<User> user=hola.getReserved_to_read();;
+
             LinkedList users = new LinkedList();
             users.addFirst(id_book);
-            users.add(id_user);
+            users.add(user);
             try {
                 heap1.agregar(id_book,users);
             } catch (KeyYaExiste k) {
@@ -29,7 +31,7 @@ public class Consultas {
                     }
                 }
                 if (addId==true){
-                    users.add(id_user);
+                    users.add(user);
                     heap1.agregar(id_book,users);
                 }
             }
@@ -51,7 +53,7 @@ public class Consultas {
         System.out.print("Tiempo de ejecucion de la consulta:"+tiempo);
 
     }
-    public void c2(LinkedList<String[]> to_read, int sizeTo_Read, LinkedList<Book> books, int sizeBooks) throws KeyYaExiste {
+    public void c2(LinkedList<Book> to_read, int sizeTo_Read, LinkedList<Book> books, int sizeBooks) throws KeyYaExiste {
         long tiempoInicio=System.currentTimeMillis();
         String titulo=null;
         LinkedList books1 = books;
@@ -93,7 +95,7 @@ public class Consultas {
         long tiempo= tiempoFin-tiempoInicio;
         System.out.print("Tiempo de ejecucion de la consulta:"+tiempo);
     }
-    public void c3(LinkedList<String[]> to_read, int sizeTo_Read, LinkedList<String[]> ratings, int sizeRatings) throws KeyYaExiste {
+    public void c3(LinkedList<Book> to_read, int sizeTo_Read, LinkedList<Rating> ratings, int sizeRatings) throws KeyYaExiste {
         long tiempoInicio=System.currentTimeMillis();
         LinkedList ratings1 = ratings;
         HeapMax<Integer, LinkedList<Integer>> heap3 = new HeapMax(sizeTo_Read);
