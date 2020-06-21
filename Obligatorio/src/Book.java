@@ -9,7 +9,7 @@ public class Book {
 
     private long book_id;
     private String isbn;
-    private Author[] author;
+    private Author author;
     private int original_privation_year;
     private String original_title;
     private String title;
@@ -17,7 +17,7 @@ public class Book {
     private String image_url;
     private LinkedList<User> reserved_to_read;
 
-    public Book(long book_id, String isbn, Author[] author, int original_privation_year, String original_title, String title, String language_code, String image_url) {
+    public Book(long book_id, String isbn, Author author, int original_privation_year, String original_title, String title, String language_code, String image_url) {
         this.book_id = book_id;
         this.isbn = isbn;
         this.author = author;
@@ -47,11 +47,11 @@ public class Book {
         this.isbn = isbn;
     }
 
-    public Author[] getAuthor() {
+    public Author getAuthor() {
         return author;
     }
 
-    public void setAuthor(Author[] author) {
+    public void setAuthor(Author author) {
         this.author = author;
     }
 

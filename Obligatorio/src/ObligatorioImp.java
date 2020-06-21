@@ -94,14 +94,14 @@ public class ObligatorioImp implements Obligatorio{
                 }
             case 4:
                 try {
-                    temp.c4();
+                    temp.c4(to_read);
                 } catch (KeyYaExiste k){
                     System.out.print("No es posible realizar esta consulta");
                     consultas();
                 }
             case 5:
                 try {
-                    temp.c5();
+                    temp.c5(books);
                 } catch (KeyYaExiste k){
                     System.out.print("No es posible realizar esta consulta");
                     consultas();

@@ -24,17 +24,10 @@ public class CargaDeDatos {
             while (line != null) {
                 if (!(line.contains(",\"nan\"")||  line.contains(",NaN")||  line.contains(",nan"))){
                     String[] datos = identificadorDeComas(line);
-                    Author[] authors = new Author[datos.length - 7];//Resto 7 porque es la cantidad de datos que tienen cantidad fija. (No son autores)
-                    int position = 0;
-                    int i;
-                    for (i = 2; i < 2 + authors.length; i++) {
-                        authors[position] = new Author(datos[i]);
-                        position++;
-                    }
-                    Book libro = new Book(Long.parseLong(datos[0]), datos[1], authors, Integer.parseInt(datos[i]), datos[i + 1], datos[i + 2], datos[i + 3], datos[i] + 4);
+                    Author authors = new Author(datos[2]);
+                    Book libro = new Book(Long.parseLong(datos[0]), datos[1], authors, Integer.parseInt(datos[3]), datos[4], datos[5], datos[6], datos[7]);
                     books.add(libro);
                     contador++;
-                    //System.out.println(contador);
                 }
                 line=br.readLine();
             }

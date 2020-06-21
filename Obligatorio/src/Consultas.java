@@ -1,8 +1,15 @@
+import tads.Hash.Hash;
+import tads.Hash.HashImpl;
 import tads.Heap.HeapMax;
+import tads.Heap.HeapMin;
 import tads.Heap.KeyYaExiste;
 import tads.LinkedList.LinkedList;
 
 import java.io.IOException;
+import java.nio.charset.IllegalCharsetNameException;
+import java.time.LocalDateTime;
+import java.time.Year;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class Consultas {
@@ -154,21 +161,71 @@ public class Consultas {
         long tiempo= tiempoFin-tiempoInicio;
         System.out.print("Tiempo de ejecucion de la consulta:"+tiempo);
     }
-    public void c4() throws KeyYaExiste {
+    public void c4(LinkedList<Book> to_read) throws KeyYaExiste {
         long tiempoInicio=System.currentTimeMillis();
-        int cod_idioma=0;
+        String cod_idioma=null;
         int cantidad=0;
+        HeapMax<String,Integer> idiomas = new HeapMax<>(to_read.getSize());
+        for (int i=0;i<to_read.getSize();i++){
+            cod_idioma = to_read.get(i).getLanguage_code();
+            cantidad = to_read.get(i).getReserved_to_read().getSize();
+            try {
+            idiomas.agregar(cod_idioma,cantidad);
+            } catch (KeyYaExiste k) {
+                int cantidadNew = idiomas.obtenerYEliminar(); //como se que esta es la misma key??
+                cantidadNew += cantidad;
+                idiomas.agregar(cod_idioma,cantidadNew);
+            }
+        }
+        for (int j=0;j<5;j++){
+            cantidad = idiomas.obtenerYEliminar(); //como obtengo mi key?
+            System.out.println("Codigo del idioma:"+cod_idioma+"Cantidad:"+cantidad);
+        }
         long tiempoFin=System.currentTimeMillis();
         long tiempo= tiempoFin-tiempoInicio;
-        System.out.println("Codigo del idioma:"+cod_idioma+"Cantidad:"+cantidad+"Tiempo de ejecucion de la consulta:"+tiempo);
+        System.out.println("Tiempo de ejecucion de la consulta:"+tiempo);
     }
-    public void c5() throws KeyYaExiste {
+    public void c5(LinkedList<Book> books) throws KeyYaExiste {
         long tiempoInicio=System.currentTimeMillis();
         String autor=null;
-        Date anio_de_publi=null;
-        int cantidad=0;
+        int anio_de_publi=0;
+        HeapMin<Long, Integer> anio = new HeapMin<>(books.getSize());
+        for (int i=0;i<books.getSize();i++){
+            long id = books.get(i).getBook_id();
+            anio_de_publi = books.get(i).getOriginal_privation_year();
+            anio.agregar(id,anio_de_publi);
+        }
+        anio_de_publi = anio.obtenerYEliminar();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy");
+        LocalDateTime now = LocalDateTime.now();
+        int actual = Integer.parseInt(dtf.format(now));
+        while (anio_de_publi<actual){
+            HeapMax<Integer,Author> autores = new HeapMax<>(books.getSize());
+            HeapMax<Integer,Integer> autores1 = new HeapMax<>(books.getSize());
+            for (int i=0;i<books.getSize();i++){
+                int counter=1;
+                if (books.get(i).getOriginal_privation_year()==anio_de_publi){
+                    try {
+                        autores.agregar(counter,books.get(i).getAuthor());
+                        autores1.agregar(counter,counter);
+                    } catch (KeyYaExiste k){
+                        Author autor1 = autores.obtenerYEliminar();
+                        counter = autores1.obtenerYEliminar();
+                        counter++;
+                        autores.agregar(counter,autor1);
+                        autores1.agregar(counter,counter);
+                    }
+                }
+            }
+            for (int i=0;i<20;i++){
+                Author autor2 = autores.obtenerYEliminar();
+                int counter = autores1.obtenerYEliminar();
+                System.out.println("Autor:"+autor2+"Anio de publicacion:"+anio_de_publi+"Cantidad:"+counter);
+            }
+            anio_de_publi++;
+        }
         long tiempoFin=System.currentTimeMillis();
         long tiempo= tiempoFin-tiempoInicio;
-        System.out.println("Autor:"+autor+"Anio de publicacion:"+anio_de_publi+"Cantidad:"+cantidad+"Tiempo de ejecucion de la consulta:"+tiempo);
+        System.out.println("Tiempo de ejecucion de la consulta:"+tiempo);
     }
 }
