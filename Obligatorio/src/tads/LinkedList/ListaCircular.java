@@ -1,5 +1,7 @@
 package tads.LinkedList;
 
+import java.util.Iterator;
+
 public class ListaCircular<T> implements List<T> {
 
     private Nodo<T> first = null;
@@ -118,6 +120,11 @@ public class ListaCircular<T> implements List<T> {
 
     public int getSize(){
         return size;
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return null;
     }
 }
 

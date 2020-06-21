@@ -1,6 +1,6 @@
-package tads.LinkedList;
+package tads.LinkedList ;
 
-public interface List<L> {
+public interface List<L> extends Iterable<L> {
 
     public void add(L value);
 

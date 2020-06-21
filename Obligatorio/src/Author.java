@@ -3,7 +3,7 @@ import tads.LinkedList.LinkedList;
 import java.io.IOException;
 import java.lang.reflect.Array;
 
-public class Author{
+public class Author {
 
     private String name;
 
@@ -18,6 +18,4 @@ public class Author{
     public void setName(String name) {
         this.name = name;
     }
-
 }
-

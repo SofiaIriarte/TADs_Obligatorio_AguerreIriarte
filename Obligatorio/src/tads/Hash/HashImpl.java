@@ -1,11 +1,12 @@
 package tads.Hash;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Objects;
+
+import tads.LinkedList.LinkedList;
+
+import java.util.Iterator;
 
 public class HashImpl<K,V> implements Hash<K,V> {
 
-    private LinkedList<HashNode>[] myHash;
+    private LinkedList<HashNode<K,V>>[] myHash;
     private int size;
     private HashNode<K,V> nodoAgregar;
 
@@ -14,14 +15,13 @@ public class HashImpl<K,V> implements Hash<K,V> {
 
         myHash = new LinkedList[size];
         for (int i = 0; i < size; i++) {
-            myHash[i] = new LinkedList<HashNode>();
+            myHash[i] = new LinkedList<HashNode<K,V>>();
         }
 
     }
 
 
     public void put(K key, V value) {
-
         nodoAgregar=new HashNode(key,value);
         this.colision(key, nodoAgregar);
 
@@ -31,13 +31,16 @@ public class HashImpl<K,V> implements Hash<K,V> {
     public V find(K key) {
 
         V valueFind=null;
-        int b=key.hashCode();
-        HashNode<K,V> nodoNext=myHash[b].getFirst();
-        while(nodoNext.getKey()!=key){
-            nodoNext=nodoNext.getNodoSiguiente();
-        }
-        if(nodoNext.getKey()==key){
-            valueFind=nodoNext.getValue();
+        int b=key.hashCode()%myHash.length;
+        LinkedList<HashNode<K,V>> nodoNext=myHash[b];
+        if (nodoNext!=null){
+            Iterator<HashNode<K,V>> iterator= nodoNext.iterator();
+            while(iterator.hasNext()&& valueFind==null){
+                HashNode<K,V> temp = iterator.next();
+                if(temp.getKey()==key){
+                    valueFind=temp.getValue();
+                }
+            }
         }
         return valueFind;
     }
@@ -45,59 +48,43 @@ public class HashImpl<K,V> implements Hash<K,V> {
 
     public boolean contains(K key) {
         boolean encontrado=false;
-        V valueFind=null;
-        int b=key.hashCode();
-        HashNode<K,V> nodoNext=myHash[b].getFirst();
-        while(nodoNext.getKey()!=key){
-            nodoNext=nodoNext.getNodoSiguiente();
-        }
-        if(nodoNext.getKey()==key){
-            encontrado=true;
+        int b=key.hashCode()%myHash.length;
+        LinkedList<HashNode<K,V>> nodoNext=myHash[b];
+        if (nodoNext!=null){
+            Iterator<HashNode<K,V>> iterator= nodoNext.iterator();
+            while(iterator.hasNext()&& !encontrado){
+                HashNode<K,V> temp = iterator.next();
+                if(temp.getKey()==key){
+                    encontrado=true;
+                }
+            }
         }
         return encontrado;
     }
 
-    public void remove(K key)throws ElementoNoExiste {
-
-        if (!this.contains(key)) {
-            throw new ElementoNoExiste();
-        }
-        V valueRemove = null;
-        int b = key.hashCode();
-        HashNode<K, V> nodoNext = myHash[b].getFirst();
-        while (nodoNext.getKey() != key) {
-            nodoNext = nodoNext.getNodoSiguiente();
-        }
-        if (nodoNext.getKey() == key) {
-
-            HashNode<K, V> anterior = nodoNext.getNodoAnterior();
-            anterior.setNodoSiguiente(nodoNext.getNodoSiguiente());
-        }
-
-    }
-
     public void colision(K key , HashNode<K,V> nodoAgregar) {
 
-        int position = key.hashCode();
-
-        HashNode<K,V> nodoAux=myHash[position].getFirst();
-        HashNode<K, V> nodoActual = nodoAux.getNodoSiguiente();
-
-        if (nodoAux != null) {
-
-            while (nodoActual.getNodoSiguiente() != null) {
-
-                nodoActual = nodoActual.getNodoSiguiente();
-
-            }
-
-            nodoActual.setNodoSiguiente(nodoAgregar);
+        int position=key.hashCode()%myHash.length;
+        LinkedList<HashNode<K,V>> listaTemp= myHash[position];
+        if (listaTemp==null){
+            listaTemp= new LinkedList<>();
+            listaTemp.add(nodoAgregar);
         }
-        if (nodoAux== null) {
-
-            myHash[position].add(nodoAgregar);
-
-
+        else{
+            HashNode<K, V> nodoBuscador = null;
+            Iterator<HashNode<K, V>> iterator = listaTemp.iterator();
+            while (iterator.hasNext() && nodoBuscador == null) {
+                HashNode<K, V> temp = iterator.next();
+                if (temp.getKey().equals(key)) {
+                    nodoBuscador = temp;
+                }
+            }
+            if (nodoBuscador != null) {
+                nodoBuscador.setValue(nodoAgregar.getValue());
+            } else {
+                listaTemp.add(nodoAgregar);
+                size++;
+            }
         }
 
 

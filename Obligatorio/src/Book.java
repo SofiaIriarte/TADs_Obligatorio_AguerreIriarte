@@ -1,27 +1,20 @@
-import tads.LinkedList.LinkedList;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Arrays;
-
 public class Book {
 
     private long book_id;
     private String isbn;
-    private Author author;
-    private int original_privation_year;
+    private Author[] author;
+    private int original_publication_year;
     private String original_title;
     private String title;
     private String language_code;
     private String image_url;
-    private LinkedList<User> reserved_to_read;
+    private User[] reserved_to_read;
 
-    public Book(long book_id, String isbn, Author author, int original_privation_year, String original_title, String title, String language_code, String image_url) {
+    public Book(long book_id, String isbn, Author[] author, int original_publication_year, String original_title, String title, String language_code, String image_url) {
         this.book_id = book_id;
         this.isbn = isbn;
         this.author = author;
-        this.original_privation_year = original_privation_year;
+        this.original_publication_year = original_publication_year;
         this.original_title = original_title;
         this.title = title;
         this.language_code = language_code;
@@ -47,20 +40,20 @@ public class Book {
         this.isbn = isbn;
     }
 
-    public Author getAuthor() {
+    public Author[] getAuthor() {
         return author;
     }
 
-    public void setAuthor(Author author) {
+    public void setAuthor(Author[] author) {
         this.author = author;
     }
 
-    public int getOriginal_privation_year() {
-        return original_privation_year;
+    public int getOriginal_publication_year() {
+        return original_publication_year;
     }
 
-    public void setOriginal_privation_year(int original_privation_year) {
-        this.original_privation_year = original_privation_year;
+    public void setOriginal_publication_year(int original_publication_year) {
+        this.original_publication_year = original_publication_year;
     }
 
     public String getOriginal_title() {
@@ -95,11 +88,11 @@ public class Book {
         this.image_url = image_url;
     }
 
-    public LinkedList<User> getReserved_to_read() {
+    public User[] getReserved_to_read() {
         return reserved_to_read;
     }
 
-    public void setReserved_to_read(LinkedList<User> reserved_to_read) {
+    public void setReserved_to_read(User[] reserved_to_read) {
         this.reserved_to_read = reserved_to_read;
     }
 }
