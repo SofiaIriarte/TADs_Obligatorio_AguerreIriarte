@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class User {
+public class User implements Comparable{
 
     private long user_id;
     private LinkedList<Book> ListaReservados;
@@ -44,5 +44,10 @@ public class User {
 
     public void setRatings(LinkedList<Rating> ratings) {
         this.ListaRatings = ratings;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return Integer.parseInt(String.valueOf(user_id));
     }
 }
