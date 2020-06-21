@@ -7,9 +7,19 @@ import java.io.IOException;
 public class User {
 
     private long user_id;
+    private LinkedList<Book> ListaReservados;
+    private LinkedList<Rating> ListaRatings;
+
+    public User(long user_id, LinkedList<Book> listaReservados, LinkedList<Rating> ratings) {
+        this.user_id = user_id;
+        ListaReservados = listaReservados;
+        this.ListaRatings = ratings;
+    }
 
     public User(long user_id) {
         this.user_id = user_id;
+        ListaReservados = new LinkedList<>();
+        ListaRatings = new LinkedList<>();
     }
 
     public long getUser_id() {
@@ -18,5 +28,21 @@ public class User {
 
     public void setUser_id(long user_id) {
         this.user_id = user_id;
+    }
+
+    public LinkedList<Book> getListaReservados() {
+        return ListaReservados;
+    }
+
+    public void setListaReservados(LinkedList<Book> listaReservados) {
+        ListaReservados = listaReservados;
+    }
+
+    public LinkedList<Rating> getRatings() {
+        return ListaRatings;
+    }
+
+    public void setRatings(LinkedList<Rating> ratings) {
+        this.ListaRatings = ratings;
     }
 }

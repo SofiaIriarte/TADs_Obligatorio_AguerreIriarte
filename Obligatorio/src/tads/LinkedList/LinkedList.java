@@ -1,5 +1,7 @@
 package tads.LinkedList;
 
+import java.util.Iterator;
+
 public class LinkedList<T> implements List<T> {
 
     private Nodo<T> first = null;
@@ -12,8 +14,8 @@ public class LinkedList<T> implements List<T> {
         Nodo<T> nuevo = new Nodo<>(value);
 
         if(size == 0){
-           this.first = nuevo;
-           this.last = this.first;
+            this.first = nuevo;
+            this.last = this.first;
         }
         else{
             nuevo.setPrevious(this.last);
@@ -106,5 +108,10 @@ public class LinkedList<T> implements List<T> {
 
     public int getSize(){
         return size;
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new LinkedListIterator<>(first);
     }
 }

@@ -14,8 +14,9 @@ import java.util.Date;
 
 public class Consultas {
 
-    public void c1(LinkedList<Book> to_read, int sizeTo_Read, LinkedList<Book> books, int sizeBooks) throws KeyYaExiste {
+    public void c1(LinkedList<Book> to_read,HashImpl<Long,Book> books) throws KeyYaExiste {
         long tiempoInicio=System.currentTimeMillis();
+        int sizeTo_Read = to_read.getSize();
         String titulo=null;
         LinkedList<Book> to_read1=to_read;
         HeapMax<Long, LinkedList<Integer>> heap1 = new HeapMax(sizeTo_Read);
@@ -60,7 +61,7 @@ public class Consultas {
         System.out.print("Tiempo de ejecucion de la consulta:"+tiempo);
 
     }
-    public void c2(LinkedList<Book> to_read, int sizeTo_Read, LinkedList<Book> books, int sizeBooks) throws KeyYaExiste {
+    public void c2(LinkedList<Book> to_read,HashImpl<Long,Book> books) throws KeyYaExiste {
         long tiempoInicio=System.currentTimeMillis();
         String titulo=null;
         LinkedList books1 = books;
@@ -102,7 +103,7 @@ public class Consultas {
         long tiempo= tiempoFin-tiempoInicio;
         System.out.print("Tiempo de ejecucion de la consulta:"+tiempo);
     }
-    public void c3(LinkedList<Book> to_read, int sizeTo_Read, LinkedList<Rating> ratings, int sizeRatings) throws KeyYaExiste {
+    public void c3(LinkedList<Book> to_read,HashImpl<Long,Rating> ratings) throws KeyYaExiste {
         long tiempoInicio=System.currentTimeMillis();
         LinkedList ratings1 = ratings;
         HeapMax<Integer, LinkedList<Integer>> heap3 = new HeapMax(sizeTo_Read);
@@ -185,7 +186,7 @@ public class Consultas {
         long tiempo= tiempoFin-tiempoInicio;
         System.out.println("Tiempo de ejecucion de la consulta:"+tiempo);
     }
-    public void c5(LinkedList<Book> books) throws KeyYaExiste {
+    public void c5(HashImpl<Long,Book> books) throws KeyYaExiste {
         long tiempoInicio=System.currentTimeMillis();
         String autor=null;
         int anio_de_publi=0;
