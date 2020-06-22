@@ -42,7 +42,6 @@ public class ObligatorioImp implements Obligatorio {
         }
         if (numero == 2) {
             try {
-                System.out.print("55");
                 consultas();
             } catch (IOException i) {
                 System.out.print("");

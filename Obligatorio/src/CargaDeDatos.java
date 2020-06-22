@@ -62,7 +62,7 @@ public class CargaDeDatos {
     public HashImpl<Long, Rating> cargaRatings(HashImpl<Long, Book> books) throws IOException{
         int contador=0;
         Book libroAEncontrar;
-        HashImpl<Long, Rating> ratings = new HashImpl<>(1152020);
+        HashImpl<Long, Rating> ratings = new HashImpl<>(6000000);
         try {
             br = new BufferedReader(new FileReader(ratingsFile));
             line=br.readLine();
@@ -73,9 +73,30 @@ public class CargaDeDatos {
                     libroAEncontrar = books.find(Long.parseLong(datos[1]));
                     if (libroAEncontrar != null) {
                         try {
-                            ratings.put(Long.parseLong(datos[0] + datos[1]), new Rating(Integer.parseInt(datos[2]), new User(Long.parseLong(datos[1])), libroAEncontrar));
+                            User user = new User(Long.parseLong(datos[0]));
+                            Rating dato = new Rating(Integer.parseInt(datos[2]),user,libroAEncontrar);
+                            ratings.put(user.getUser_id(),dato);
                             contador++;
                         } catch (Exception e ){
+                            contador++;
+                            System.out.println("Error en linea"+contador);
+                        }
+                    } else {
+                        try {
+                            Book book = new Book();
+                            book.setBook_id(Long.parseLong(datos[1]));
+                            book.setTitle(null);
+                            book.setAuthor(null);
+                            book.setImage_url(null);
+                            book.setIsbn(null);
+                            book.setLanguage_code("nan");
+                            book.setOriginal_publication_year(0000);
+                            book.setOriginal_title(null);
+                            User user = new User(Long.parseLong(datos[0]));
+                            Rating dato = new Rating(Integer.parseInt(datos[2]),user,book);
+                            ratings.put(user.getUser_id(),dato);
+                            contador++;
+                        } catch (Exception e) {
                             contador++;
                             System.out.println("Error en linea"+contador);
                         }
@@ -86,6 +107,7 @@ public class CargaDeDatos {
         } catch (IOException e) {
             System.out.print("Error al cargar los datos, intente de nuevo");
         }
+        System.out.print(contador);
         br.close();
         return ratings;
     }
