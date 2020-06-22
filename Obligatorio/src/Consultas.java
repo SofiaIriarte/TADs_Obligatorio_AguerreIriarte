@@ -172,7 +172,7 @@ public class Consultas {
             cod_idioma = to_read.get(i).getLanguage_code();
             cantidad = to_read.get(i).getReserved_to_read().length;
             try {
-            idiomas.agregar(cod_idioma,cantidad);
+                idiomas.agregar(cod_idioma,cantidad);
             } catch (KeyYaExiste k) {
                 int cantidadNew = idiomas.obtenerYEliminar(); //como se que esta es la misma key??
                 cantidadNew += cantidad;
