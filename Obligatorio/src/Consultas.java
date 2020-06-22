@@ -14,99 +14,67 @@ import java.util.Date;
 
 public class Consultas {
 
-    public void c1(HashImpl<Long,Book> to_read,HashImpl<Long,Book> books,LinkedList<Long> id_books) throws KeyYaExiste {
+    public void c1(HashImpl<Long,Book> to_read,HashImpl<Long,Book> books) throws KeyYaExiste {
         long tiempoInicio=System.currentTimeMillis();
-        int sizeTo_Read = 912705;
+        long sizeTo_Read = 912705;
         String titulo=null;
-        HashImpl<Long, LinkedList> hash1 = new HashImpl<>(sizeTo_Read);
-        HeapMax<Long, LinkedList> heap1 = new HeapMax<>(sizeTo_Read);
+        HashImpl<Long, HashImpl<Long,User[]>> hash1 = new HashImpl((int) sizeTo_Read);
+        HeapMax<Long, LinkedList> heap1 = new HeapMax((int) sizeTo_Read);
         long id_book=0;
-        for (int i=0;i<id_books.getSize()-1;i++){
-            User[] user=new User[100000];
-            Book hola= new Book();
-            id_book = id_books.get(i);
+        User[] user = new User[2000];
+        Book hola = new Book();
+        for (long i=0;i<10000;i++) {
+            id_book = i;
+            hola = to_read.find(i);
             try{
-                hola = to_read.find(id_book);
                 user = hola.getReserved_to_read();
-                LinkedList users = new LinkedList();
-                users.addFirst(id_book);
-                users.add(user);
-                hash1.put(id_book,users);
-                users = (LinkedList) hash1.find(id_book); // como hago para que aca me elimine el que yo quiero y no el primero??
-                boolean addId=true;
-                for (int j=1;j<users.getSize();j++){
-                    try {
-                        if (j==Integer.parseInt(String.valueOf(users.get(j)))){
-                            addId=false;
-                        }
-                    } catch (Exception e){
-                        addId=true;
-                    }
-                }
-                if (addId==true){
-                    users.add(user);
-                    hash1.put(id_book,users);
-                }
-                try {
-                    heap1.agregar(id_book,users);
-                } catch (KeyYaExiste k){
-                    System.out.print("Maaaaaaaaaaaaaaal");
-                }
             } catch (Exception e){
-                user[0]=new User(0);
-                LinkedList users = new LinkedList();
-                users.addFirst(id_book);
-                users.add(user);
-                hash1.put(id_book,users);
-                users = (LinkedList) hash1.find(id_book); // como hago para que aca me elimine el que yo quiero y no el primero??
-                boolean addId=true;
-                for (int j=1;j<users.getSize();j++){
-                    try {
-                        if (j==Integer.parseInt(String.valueOf(users.get(j)))){
-                            addId=false;
-                        }
-                    } catch (Exception f){
-                        addId=true;
-                    }
-                }
-                if (addId==true){
-                    users.add(user);
-                    hash1.put(id_book,users);
-                }
-                try {
-                    heap1.agregar(id_book,users);
-                } catch (KeyYaExiste k){
-                    System.out.print("Maaaaaaaaaaaaaaal");
-                }
+                user=null;
             }
+            HashImpl<Long,User[]> users = new HashImpl<>(10000);
+            users.put(i,user);
+            hash1.put(i,users);
+            users = hash1.find(i);
+            try {
+                users.put(i,user);
+                hash1.put(id_book,users);
+            }
+            catch (Exception e){
+                break;
+            }
+            try {
+                heap1.agregar(id_book,users);
+            } catch (KeyYaExiste k){
+                System.out.print("Maaaaaaaaaaaaaaal");
+            }
+
         }
-        for (int l=0;l<9;l++){
+        /*for (int l=0;l<9;l++){
             LinkedList datos = heap1.obtenerYEliminar();
             id_book = (long) datos.get(0);
             int cantidad = datos.getSize()-1;
-            LinkedList<Long> id_books1=id_books;
-            for (int i=0;i<10000;i++){
+            for (long i=0;i<10000;i++){
                 try {
-                    if (id_book==id_books.get(i)){
-                        titulo=books.find((long) i).getTitle();
+                    if (id_book==i){
+                        titulo=books.find(i).getTitle();
                     }
                 } catch (Exception e){
                     break;
                 }
             }
             System.out.println("Id del libro: " + id_book + " Titulo: " + titulo + " Cantidad: " + cantidad);
-        }
+        }*/
         long tiempoFin=System.currentTimeMillis();
         long tiempo= tiempoFin-tiempoInicio;
-        System.out.print("Tiempo de ejecucion de la consulta: "+tiempo);
-
+        System.out.print("Tiempo de ejecucion de la consulta: "+tiempo+"\n");
     }
+
     public void c2(HashImpl<Long,Book> to_read,HashImpl<Long,Book> books, LinkedList<Long> id_books) throws KeyYaExiste {
         long tiempoInicio=System.currentTimeMillis();
         String titulo=null;
         HashImpl<Long,Book> books1 = books;
         HashImpl<Long,Book> to_read1 = to_read;
-        int sizeTo_Read = 100000000;
+        int sizeTo_Read = 912705;
         HeapMax<Long, LinkedList> heap2 = new HeapMax(sizeTo_Read);
         for (int i=0;i<sizeTo_Read;i++){
             int counter=1;

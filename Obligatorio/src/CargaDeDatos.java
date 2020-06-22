@@ -23,10 +23,8 @@ public class CargaDeDatos {
             line = br.readLine();
             line = br.readLine();
             while (line != null) {
-                if (!(line.contains(",\"nan\"") || line.contains(",NaN") || line.contains(",nan"))) {
-                    String[] datos = identificadorDeComas(line);
-                    id_books.add(Long.parseLong(datos[0]));
-                }
+                String[] datos = identificadorDeComas(line);
+                id_books.add(Long.parseLong(datos[0]));
                 line = br.readLine();
             }
         } catch (IOException e) {
@@ -146,14 +144,16 @@ public class CargaDeDatos {
                     long book_id= Long.parseLong(datos[1]);
                     for (int i=0;i<10000;i++) {
                         try{
-                            if (book_id==book.find(book_id).getBook_id()){
-                                User[] users = book.find(book_id).getReserved_to_read();
+                            if (book_id==book.find((long)i).getBook_id()){
+                                User[] users = book.find((long)i).getReserved_to_read();
                                 User[] userList = new User[users.length];
                                 for (int l=0;l<users.length;l++){
                                     userList[i]=users[i];
                                 }
                                 userList[-1]=user;
                                 book.find(book_id).setReserved_to_read(userList);
+                                Book bookAdd = book.find((long)i);
+                                to_read.put(book_id,bookAdd);
                             }
                         } catch (NullPointerException n){
                             break;
