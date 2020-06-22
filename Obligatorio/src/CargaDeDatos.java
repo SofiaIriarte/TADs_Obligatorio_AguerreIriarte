@@ -36,7 +36,19 @@ public class CargaDeDatos {
                     Book libro = new Book(Long.parseLong(datos[0]), datos[1], authors, Integer.parseInt(datos[i]), datos[i + 1], datos[i + 2], datos[i + 3], datos[i] + 4);
                     books.put(libro.getBook_id(), libro);
                     contador++;
-                    System.out.println(contador);
+                }
+                else {
+                    String[] datos = identificadorDeComas(line);
+                    Author[] authors = new Author[datos.length - 7];//Resto 7 porque es la cantidad de datos que tienen cantidad fija. (No son autores)
+                    int position = 0;
+                    int i;
+                    for (i = 2; i < 2 + authors.length; i++) {
+                        authors[position] = new Author(datos[i]);
+                        position++;
+                    }
+                    Book libro = new Book(Long.parseLong(datos[0]), datos[1], authors, 0000, datos[i + 1], datos[i + 2], datos[i + 3], datos[i] + 4);
+                    books.put(libro.getBook_id(), libro);
+                    contador++;
                 }
                 line = br.readLine();
             }
@@ -47,28 +59,10 @@ public class CargaDeDatos {
         return books;
     }
 
-
-
-    /*      String[] datos = line.split(cvsSplitBy);
-                libroAEncontrar = books.find(Long.parseLong(datos[0]));
-                if (libroAEncontrar != null) {
-                    try {
-                        ratings.put(Long.parseLong(datos[0] + datos[1]), new Rating(Integer.parseInt(datos[2]), new User(Long.parseLong(datos[1])), libroAEncontrar));
-                        contador++;
-                        System.out.println(contador+" "+line);
-                    } catch (Exception e ){
-                        contador++;
-                        System.out.println("Error en linea"+contador);
-                    }
-                }
-                line = br.readLine();
-            }
-  */
-
     public HashImpl<Long, Rating> cargaRatings(HashImpl<Long, Book> books) throws IOException{
         int contador=0;
         Book libroAEncontrar;
-        HashImpl<Long, Rating> ratings = new HashImpl<>(1000);
+        HashImpl<Long, Rating> ratings = new HashImpl<>(1152020);
         try {
             br = new BufferedReader(new FileReader(ratingsFile));
             line=br.readLine();
@@ -76,25 +70,16 @@ public class CargaDeDatos {
             while (line != null) {
                 if (!(line.contains(",\"nan\"")||  line.contains(",NaN")||  line.contains(",nan"))){
                     String[] datos = identificadorDeComas(line);
-                    libroAEncontrar = books.find(Long.parseLong(datos[0]));
+                    libroAEncontrar = books.find(Long.parseLong(datos[1]));
                     if (libroAEncontrar != null) {
                         try {
                             ratings.put(Long.parseLong(datos[0] + datos[1]), new Rating(Integer.parseInt(datos[2]), new User(Long.parseLong(datos[1])), libroAEncontrar));
                             contador++;
-                            System.out.println(contador+" "+line);
                         } catch (Exception e ){
                             contador++;
                             System.out.println("Error en linea"+contador);
                         }
                     }
-                    /*int rating= Integer.parseInt(datos[0]);
-                    long id_user= Long.parseLong(datos[1]);
-                    int book_id= Integer.parseInt(datos[2]);
-                    Rating ratingAdd = new Rating();
-                    ratingAdd.setBook_id(book_id);
-                    ratingAdd.setUser_id(id_user);
-                    ratingAdd.setRating(rating);
-                    ratings.add(ratingAdd);*/
                 }
                 line=br.readLine();
             }
@@ -104,10 +89,9 @@ public class CargaDeDatos {
         br.close();
         return ratings;
     }
-    public LinkedList<Book> cargaTo_Read(HashImpl<Long,Book> book) throws IOException{
+    public HashImpl<Long,Book> cargaTo_Read(HashImpl<Long,Book> book) throws IOException{
         int contador=0;
-        LinkedList<Book> to_read = new LinkedList<>();
-        LinkedList<User> userList=new LinkedList<>();
+        HashImpl<Long,Book> to_read = new HashImpl<>(912705);
         try {
             br = new BufferedReader(new FileReader(to_readFile));
             line=br.readLine();
@@ -118,13 +102,22 @@ public class CargaDeDatos {
                     long id_user= Long.parseLong(datos[0]);
                     User user=new User(id_user);
                     user.setUser_id(id_user);
-                    userList.add(user);
                     long book_id= Long.parseLong(datos[1]);
-                    /*for (int i=0;i<book.getSize();i++) {
-                        if (book_id==book.get(i).getBook_id()){
-                            book.get(i).setReserved_to_read(userList);
+                    for (int i=0;i<10000;i++) {
+                        try{
+                            if (book_id==book.find((long) i).getBook_id()){
+                                User[] users = book.find((long) i).getReserved_to_read();
+                                User[] userList = new User[users.length];
+                                for (int l=0;l<users.length;l++){
+                                    userList[i]=users[i];
+                                }
+                                userList[-1]=user;
+                                book.find((long) i).setReserved_to_read(userList);
+                            }
+                        } catch (NullPointerException n){
+                            break;
                         }
-                    }*/
+                    }
                     contador++;
                 }
                 line=br.readLine();

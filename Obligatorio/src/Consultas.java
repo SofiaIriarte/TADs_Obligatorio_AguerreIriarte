@@ -14,14 +14,14 @@ import java.util.Date;
 
 public class Consultas {
 
-    public void c1(LinkedList<Book> to_read,HashImpl<Long,Book> books) throws KeyYaExiste {
+    public void c1(HashImpl<Long,Book> to_read,HashImpl<Long,Book> books) throws KeyYaExiste {
         long tiempoInicio=System.currentTimeMillis();
-        int sizeTo_Read = to_read.getSize();
+        int sizeTo_Read = 1000000000;
         String titulo=null;
-        LinkedList<Book> to_read1=to_read;
+        HashImpl<Long,Book> to_read1=to_read;
         HeapMax<Long, LinkedList<Integer>> heap1 = new HeapMax(sizeTo_Read);
         for (int i=0;i<sizeTo_Read;i++){
-            Book hola = to_read1.get(i);
+            Book hola = to_read1.find((long) i);
             long id_book= hola.getBook_id();
             User[] user=hola.getReserved_to_read();;
 
@@ -61,16 +61,16 @@ public class Consultas {
         System.out.print("Tiempo de ejecucion de la consulta:"+tiempo);
 
     }
-    public void c2(LinkedList<Book> to_read,HashImpl<Long,Book> books) throws KeyYaExiste {
+    public void c2(HashImpl<Long,Book> to_read,HashImpl<Long,Book> books) throws KeyYaExiste {
         long tiempoInicio=System.currentTimeMillis();
         String titulo=null;
         HashImpl<Long,Book> books1 = books;
-        LinkedList<Book> to_read1 = to_read;
-        int sizeTo_Read = to_read.getSize();
+        HashImpl<Long,Book> to_read1 = to_read;
+        int sizeTo_Read = 100000000;
         HeapMax<Long, LinkedList> heap2 = new HeapMax(sizeTo_Read);
         for (int i=0;i<sizeTo_Read;i++){
             int counter=1;
-            Book hola = (Book) to_read1.get(i);
+            Book hola = (Book) to_read1.find((long) i);
             long id_book= hola.getBook_id();
             LinkedList datos = new LinkedList();
             datos.addFirst(id_book);
@@ -104,10 +104,11 @@ public class Consultas {
         long tiempo= tiempoFin-tiempoInicio;
         System.out.print("Tiempo de ejecucion de la consulta:"+tiempo);
     }
-    public void c3(LinkedList<Book> to_read,HashImpl<Long,Rating> ratings) throws KeyYaExiste {
+    public void c3(HashImpl<Long,Book> to_read,HashImpl<Long,Rating> ratings) throws KeyYaExiste {
         long tiempoInicio=System.currentTimeMillis();
         HashImpl<Long,Rating> ratings1 = ratings;
-        HeapMax<Long, LinkedList> heap3 = new HeapMax(to_read.getSize());
+        int sizeTo_Read= 100000000;
+        HeapMax<Long, LinkedList> heap3 = new HeapMax(sizeTo_Read);
         for (int i=0;i<1000;i++){
             int counter=0;
             Rating hola= (Rating) ratings1.find((long) i);
@@ -163,14 +164,15 @@ public class Consultas {
         long tiempo= tiempoFin-tiempoInicio;
         System.out.print("Tiempo de ejecucion de la consulta:"+tiempo);
     }
-    public void c4(LinkedList<Book> to_read) throws KeyYaExiste {
+    public void c4(HashImpl<Long,Book> to_read) throws KeyYaExiste {
         long tiempoInicio=System.currentTimeMillis();
         String cod_idioma=null;
+        int sizeTo_Read = 100000000;
         int cantidad=0;
-        HeapMax<String,Integer> idiomas = new HeapMax<>(to_read.getSize());
-        for (int i=0;i<to_read.getSize();i++){
-            cod_idioma = to_read.get(i).getLanguage_code();
-            cantidad = to_read.get(i).getReserved_to_read().length;
+        HeapMax<String,Integer> idiomas = new HeapMax<>(sizeTo_Read);
+        for (int i=0;i<sizeTo_Read;i++){
+            cod_idioma = to_read.find((long) i).getLanguage_code();
+            cantidad = to_read.find((long) i).getReserved_to_read().length;
             try {
                 idiomas.agregar(cod_idioma,cantidad);
             } catch (KeyYaExiste k) {

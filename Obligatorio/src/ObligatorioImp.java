@@ -16,7 +16,7 @@ public class ObligatorioImp implements Obligatorio {
     private static HashImpl<Long, Book> books;
     private static HashImpl<Long, User> users;
     private static HashImpl<Long, Rating> ratings;
-    private static LinkedList<Book> to_read;
+    private static HashImpl<Long,Book> to_read;
     static Scanner br = new Scanner(System.in);
 
     public static void main(String[] args) throws IOException, KeyYaExiste {
