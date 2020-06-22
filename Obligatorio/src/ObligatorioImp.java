@@ -17,6 +17,7 @@ public class ObligatorioImp implements Obligatorio {
     private static HashImpl<Long, User> users;
     private static HashImpl<Long, Rating> ratings;
     private static HashImpl<Long,Book> to_read;
+    private static LinkedList<Long> id_books;
     static Scanner br = new Scanner(System.in);
 
     public static void main(String[] args) throws IOException, KeyYaExiste {
@@ -32,6 +33,7 @@ public class ObligatorioImp implements Obligatorio {
         if (numero == 1) {
             long tiempoInicio = System.currentTimeMillis();
             CargaDeDatos temp = new CargaDeDatos();
+            id_books=temp.id_books();
             books = temp.cargaBooks();
             ratings = temp.cargaRatings(books);
             to_read = temp.cargaTo_Read(books);
@@ -66,43 +68,40 @@ public class ObligatorioImp implements Obligatorio {
                 "6. Salir\n");
         int numero = br.nextInt();
         Consultas temp = new Consultas();
-        //int sizeTo_Read = to_read.getSize();
-        //int sizeBooks = books.getSize();
-        //int sizeRatings = ratings.getSize();
         switch (numero) {
             case 1:
                 try {
-                    temp.c1(to_read, books);
+                    temp.c1(to_read,books, id_books);
                 } catch (KeyYaExiste k) {
-                    System.out.print("No es posible realizar esta consulta");
+                    System.out.print("No es posible realizar esta consulta\n");
                     consultas();
                 }
             case 2:
                 try {
-                    temp.c2(to_read, books);
+                    temp.c2(to_read, books,id_books);
                 } catch (KeyYaExiste k) {
-                    System.out.print("No es posible realizar esta consulta");
+                    System.out.print("No es posible realizar esta consulta\n");
                     consultas();
                 }
             case 3:
                 try {
                     temp.c3(to_read, ratings);
                 } catch (KeyYaExiste k) {
-                    System.out.print("No es posible realizar esta consulta");
+                    System.out.print("No es posible realizar esta consulta\n");
                     consultas();
                 }
             case 4:
                 try {
                     temp.c4(to_read);
                 } catch (KeyYaExiste k) {
-                    System.out.print("No es posible realizar esta consulta");
+                    System.out.print("No es posible realizar esta consulta\n");
                     consultas();
                 }
             case 5:
                 try {
                     temp.c5(books);
                 } catch (KeyYaExiste k) {
-                    System.out.print("No es posible realizar esta consulta");
+                    System.out.print("No es posible realizar esta consulta\n");
                     consultas();
                 }
             case 6:

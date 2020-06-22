@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public class HeapMax<K extends Comparable<K>,V> {
 
-    private Nodo<K,V>[] array = new Nodo[10];
+    private Nodo<K,V>[] array = new Nodo[912705];
     private int cantidadValues = 0;
 
     public HeapMax(int size){
