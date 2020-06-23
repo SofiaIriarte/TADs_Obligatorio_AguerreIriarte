@@ -17,7 +17,6 @@ public class ObligatorioImp implements Obligatorio {
     private static HashImpl<Long, User> users;
     private static HashImpl<Long, Rating> ratings;
     private static HashImpl<Long,Book> to_read;
-    private static LinkedList<Long> id_books;
     static Scanner br = new Scanner(System.in);
 
     public static void main(String[] args) throws IOException, KeyYaExiste {
@@ -33,9 +32,7 @@ public class ObligatorioImp implements Obligatorio {
         if (numero == 1) {
             long tiempoInicio = System.currentTimeMillis();
             CargaDeDatos temp = new CargaDeDatos();
-            id_books=temp.id_books();
             books = temp.cargaBooks();
-            //CargaDeDatos temp1 = new CargaDeDatos();
             ratings = temp.cargaRatings(books);
             to_read = temp.cargaTo_Read(books);
             long tiempoFin = System.currentTimeMillis();
@@ -60,16 +57,61 @@ public class ObligatorioImp implements Obligatorio {
 
 
     public static void consultas() throws IOException, KeyYaExiste {
-        System.out.print("1. Indicar el Top 10 de libros que más lecturas tienen por parte de usuarios.\n" +
-                "2. Indicar el Top 20 de libros que más cantidad de lecturas tienen.\n" +
-                "3. Indicar el Top 10 de usuarios que realizaron mayor cantidad de evaluaciones a libros " +
+        System.out.print("Consultas:\n\t1. Indicar el Top 10 de libros que más lecturas tienen por parte de usuarios.\n" +
+                "\t2. Indicar el Top 20 de libros que más cantidad de lecturas tienen.\n" +
+                "\t3. Indicar el Top 10 de usuarios que realizaron mayor cantidad de evaluaciones a libros " +
                 "y ordenarlo por rating promedio descendente.\n" +
-                "4. Indicar el Top 5 de los idiomas asociados a libros que han tenido más reservas.\n" +
-                "5. Indicar el Top 20 de autores que más publicaciones han hecho por año.\n" +
-                "6. Salir\n");
+                "\t4. Indicar el Top 5 de los idiomas asociados a libros que han tenido más reservas.\n" +
+                "\t5. Indicar el Top 20 de autores que más publicaciones han hecho por año.\n" +
+                "\t6. Salir\n");
         int numero = br.nextInt();
         Consultas temp = new Consultas();
-        switch (numero) {
+        if (numero==1){
+            try {
+                temp.c1(to_read,books);
+            } catch (KeyYaExiste k) {
+                System.out.print("No es posible realizar esta consulta\n");
+            }
+            consultas();
+        }
+        if (numero==2){
+            try {
+                temp.c2(to_read, books);
+            } catch (KeyYaExiste k) {
+                System.out.print("No es posible realizar esta consulta\n");
+            }
+            consultas();
+        }
+        if (numero==3){
+            try {
+                temp.c3(to_read, ratings);
+            } catch (KeyYaExiste k) {
+                System.out.print("No es posible realizar esta consulta\n");
+            }
+            consultas();
+        }
+        if (numero==4){
+            try {
+                temp.c4(to_read);
+            } catch (KeyYaExiste k) {
+                System.out.print("No es posible realizar esta consulta\n");
+            }
+            consultas();
+        }
+        if (numero==5){
+            try {
+                temp.c5(books);
+            } catch (KeyYaExiste k) {
+                System.out.print("No es posible realizar esta consulta\n");
+            }
+            consultas();
+        }
+        if (numero!=1&&numero!=2&&numero!=3&&numero!=4&&numero!=5&&numero!=6){
+            System.out.print("Opcion no valida, intente nuevamente");
+            consultas();
+        }
+
+        /*switch (numero) {
             case 1:
                 try {
                     temp.c1(to_read,books);
@@ -110,6 +152,6 @@ public class ObligatorioImp implements Obligatorio {
             default:
                 System.out.print("Opcion no valida, intente nuevamente");
                 consultas();
-        }
+        }*/
     }
 }

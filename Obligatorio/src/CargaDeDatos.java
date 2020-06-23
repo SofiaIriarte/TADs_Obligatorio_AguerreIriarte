@@ -17,27 +17,8 @@ public class CargaDeDatos {
     private String line = "";
     private String cvsSplitBy = ",";
 
-    public LinkedList<Long> id_books() throws IOException{
-        LinkedList<Long> id_books = new LinkedList();
-        try {
-            br = new BufferedReader(new FileReader(booksFile));
-            line = br.readLine();
-            line = br.readLine();
-            while (line != null) {
-                String[] datos = identificadorDeComas(line);
-                id_books.add(Long.parseLong(datos[0]));
-                line = br.readLine();
-            }
-        } catch (IOException e) {
-            System.out.print("Error al cargar los datos, intente de nuevo");
-        }
-        br.close();
-        return id_books;
-    }
-
     public HashImpl<Long, Book> cargaBooks() throws IOException {
-        int contador = 0;
-        HashImpl<Long, Book> books = new HashImpl<>(10000);
+        HashImpl<Long, Book> books = new HashImpl<>(9998);
         try {
             br = new BufferedReader(new FileReader(booksFile));
             line = br.readLine();
@@ -52,7 +33,7 @@ public class CargaDeDatos {
                         authors[position] = new Author(datos[i]);
                         position++;
                     }
-                    Book libro = new Book(Long.parseLong(datos[0]), datos[1], authors, Integer.parseInt(datos[i]), datos[i + 1], datos[i + 2], datos[i + 3], datos[i+4]);
+                    Book libro = new Book();
                     libro.setBook_id(Long.parseLong(datos[0]));
                     libro.setIsbn(datos[1]);
                     libro.setAuthor(authors);
@@ -61,11 +42,28 @@ public class CargaDeDatos {
                     libro.setTitle(datos[i + 2]);
                     libro.setLanguage_code(datos[i + 3]);
                     libro.setImage_url(datos[i + 4]);
-                    books.put(libro.getBook_id(), libro);
-                    contador++;
+                    books.put(Long.parseLong(datos[0]), libro);
+                    line = br.readLine();
+                } else{
+                    String[] datos = identificadorDeComas(line);
+                    Author[] authors = new Author[datos.length - 7];//Resto 7 porque es la cantidad de datos que tienen cantidad fija. (No son autores)
+                    int position = 0;
+                    int i;
+                    for (i = 2; i < 2 + authors.length; i++) {
+                        authors[position] = new Author(datos[i]);
+                        position++;
+                    }
+                    Book libro = new Book();
+                    libro.setBook_id(Long.parseLong(datos[0]));
+                    libro.setAuthor(authors);
+                    libro.setOriginal_publication_year(0000);
+                    libro.setOriginal_title(datos[i + 1]);
+                    libro.setTitle(datos[i + 2]);
+                    libro.setLanguage_code(datos[i + 3]);
+                    books.put(Long.parseLong(datos[0]), libro);
+                    line = br.readLine();
                 }
-                line = br.readLine();
-            }
+             }
         } catch (IOException e) {
             System.out.print("Error al cargar los datos, intente de nuevo");
         }
@@ -125,47 +123,39 @@ public class CargaDeDatos {
         return ratings;
     }
     public HashImpl<Long,Book> cargaTo_Read(HashImpl<Long,Book> book) throws IOException{
-        int contador=0;
         HashImpl<Long,Book> to_read = new HashImpl<>(912705);
         try {
             br = new BufferedReader(new FileReader(to_readFile));
             line=br.readLine();
             line=br.readLine();
             while (line != null) {
-                if (!(line.contains(",\"nan\"")||  line.contains(",NaN")||  line.contains(",nan"))){
-                    String[] datos = identificadorDeComas(line);
-                    long id_user= Long.parseLong(datos[0]);
-                    User user=new User(id_user);
-                    user.setUser_id(id_user);
-                    long book_id= Long.parseLong(datos[1]);
-                    for (int i=0;i<9999;i++) {
-                        try{
-                            if (book_id==book.find((long)i).getBook_id()) {
-                                try {
-                                    User[] users = book.find((long)i).getReserved_to_read();
-                                    User[] userList = new User[users.length];
-                                    for (int l=0;l<users.length;l++){
-                                        userList[i]=users[i];
-                                    }
-                                    userList[-1]=user;
-                                    book.find((long)i).setReserved_to_read(userList);
-                                } catch (NullPointerException n) {
-                                    User[] userList = new User[1000];
-                                    userList[0] = user;
-                                    book.find((long)i).setReserved_to_read(userList);
-                                }
-                            }
-                            to_read.put(book_id,book.find((long)i));
-                            contador++;
-                        } catch (NullPointerException n){
-                            break;
+                String[] datos = identificadorDeComas(line);
+                long id_user= Long.parseLong(datos[0]);
+                User user=new User(id_user);
+                user.setUser_id(id_user);
+                long book_id= Long.parseLong(datos[1]);
+                try {
+                    Book book1 = book.find(book_id);
+                    try {
+                        User[] users = book1.getReserved_to_read();
+                        User[] userList = new User[users.length+1];
+                        for (int l=0;l<users.length;l++){
+                            userList[l]=users[l];
                         }
+                        userList[users.length-1]=user;
+                        book1.setReserved_to_read(userList);
+                    } catch (Exception e) {
+                        User[] userList = new User[1];
+                        userList[0] = user;
+                        book1.setReserved_to_read(userList);
                     }
-                }
-                line=br.readLine();
-            }
-        } catch (IOException e) {
-            System.out.print("Error al cargar los datos, intente de nuevo");
+                    to_read.put(book_id,book1);
+                    line=br.readLine();
+                } catch (Exception e){
+                    line=br.readLine();
+                }            }
+        } catch (Exception e){
+                line=null;
         }
         br.close();
         return to_read;

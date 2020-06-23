@@ -20,62 +20,24 @@ public class Consultas {
         HeapMax<Integer,Book> cons = new HeapMax<>(912705);
         HashImpl<Long,Integer> consInt = new HashImpl<>(912705);
         long id_book=0;
-        for (long i=0;i<10000;i++){
-            int counter=0;
-            try{
-                while (to_read.find(i).getBook_id()==i){
-                    counter++;
+        int counter=0;
+        for (long i=1;i<9998;i++){
+            try {
+                if (to_read.find(i).getBook_id()==i){
+                    try {
+                        counter=to_read.find(i).getReserved_to_read().length;
+                    } catch (Exception e){
+                        i++;
+                    }
+                    cons.agregar(counter, to_read.find(i));
+                    consInt.put(to_read.find(i).getBook_id(),counter);
                 }
-                cons.agregar(counter,to_read.find(i));
-                consInt.put(to_read.find(i).getBook_id(),counter);
             } catch (NullPointerException n){
-                break;
+                i++;
             }
         }
-        /*long sizeTo_Read = 912705;
-        System.out.print(sizeTo_Read);
-        String titulo=null;
-        HeapMax<Long,Book> to_read1=to_read;
-        HashImpl<Long, User[]> hash1 = new HashImpl((int) sizeTo_Read);
-        HashImpl<Long, LinkedList> heap1 = new HashImpl<>((int) sizeTo_Read);
-        HeapMax<Integer, Integer> heap2 = new HeapMax((int) sizeTo_Read);
-        HashImpl<Long, Integer> heap3 = new HashImpl((int) sizeTo_Read);
-        long id_book=0;
-        while (sizeTo_Read>1) {
-            Book hola=to_read1.obtenerYEliminar();
-            id_book =hola.getBook_id();
-            User[] user = new User[2000];
-            try{
-                user = hola.getReserved_to_read();
-            } catch (Exception e){
-                hola.setReserved_to_read(user);
-            }
-            //HashImpl<Long,User[]> users = new HashImpl(10000);
-            //users.put((long)i,user);
-            //hash1.put((long)i,user);
-            int valueSize=0;
-            LinkedList<Integer> values = new LinkedList();
-            values.addFirst((int) id_book);
-            try {
-                try {
-                    values.add(user.length);
-                } catch (Exception e){
-                    values.add(0);
-                }
-                heap1.put(id_book,values);
-                valueSize =values.getSize()-1;
-            } catch (Exception k){
-                //id_book=heap2.obtenerYEliminar();
-                //valueSize=heap1.find(id_book).getSize()-1;
-                valueSize++;
-                //heap2.agregar(valueSize, (int) id_book);
-            }
-            heap2.agregar(valueSize,(int)id_book);
-            heap3.put(id_book,valueSize);
-            sizeTo_Read--;
-        }*/
         try{
-            for (int l=0;l<9;l++){
+            for (int l=0;l<10;l++){
                 id_book=cons.obtenerYEliminar().getBook_id();
                 int cantidad = (int) consInt.find(id_book);
                 try {
@@ -90,7 +52,7 @@ public class Consultas {
         }
         long tiempoFin=System.currentTimeMillis();
         long tiempo= tiempoFin-tiempoInicio;
-        System.out.print("Tiempo de ejecucion de la consulta: "+tiempo+"\n");
+        System.out.print("Tiempo de ejecucion de la consulta: "+tiempo+" ms\n");
     }
 
     public void c2(HashImpl<Long,Book> to_read,HashImpl<Long,Book> books) throws KeyYaExiste {
@@ -99,20 +61,24 @@ public class Consultas {
         HeapMax<Integer,Book> cons = new HeapMax<>(912705);
         HashImpl<Long,Integer> consInt = new HashImpl<>(912705);
         long id_book=0;
-        for (long i=0;i<10000;i++){
-            int counter=0;
+        for (long i=1;i<9998;i++) {
+            int counter = 0;
             try{
-                while (to_read.find(i).getBook_id()==i){
-                    counter++;
+                if (to_read.find(i).getBook_id() == i) {
+                counter = to_read.find(i).getReserved_to_read().length;
+                try {
+                    cons.agregar(counter, to_read.find(i));
+                } catch (Exception e) {
+                    i++;
                 }
-                cons.agregar(counter,to_read.find(i));
-                consInt.put(to_read.find(i).getBook_id(),counter);
-            } catch (NullPointerException n){
-                break;
+                consInt.put(to_read.find(i).getBook_id(), counter);
+                }
+            } catch(NullPointerException n){
+                i++;
             }
         }
         try{
-            for (int l=0;l<19;l++){
+            for (int l=0;l<20;l++){
                 id_book=cons.obtenerYEliminar().getBook_id();
                 int cantidad = (int) consInt.find(id_book);
                 try {
@@ -125,57 +91,9 @@ public class Consultas {
         } catch (Exception e){
             System.out.print("La cantidad de reservas es menor a la solicitada");
         }
-        /*long tiempoInicio=System.currentTimeMillis();
-        String titulo=null;
-        long sizeTo_Read= 912705;
-        HashImpl<Long, HashImpl<Long,User[]>> hash1 = new HashImpl((int) sizeTo_Read);
-        HashImpl<Long, LinkedList> heap2 = new HashImpl((int) sizeTo_Read);
-        long id_book=0;
-        User[] user = new User[2000];
-        Book hola = new Book();
-        HeapMax<Integer, Integer> heap1 = new HeapMax((int) sizeTo_Read);
-
-        for (int i=0;i<sizeTo_Read;i++) {
-            hola=to_read.find((long)i);
-            id_book =hola.getBook_id();
-            try{
-                user = hola.getReserved_to_read();
-            } catch (Exception e){
-                user=new User[0];
-            }
-            HashImpl<Long,User[]> users = new HashImpl<>(10000);
-            users.put((long)i,user);
-            hash1.put((long)i,users);
-            try {
-                LinkedList<Integer> values = new LinkedList();
-                values.addFirst(i);
-                try {
-                    values.add(users.find((long) i).length);
-                } catch (Exception e){
-                    values.add(0);
-                }
-                heap2.put((long)i,values);
-                int valueSize =values.getSize()-1;
-                heap1.agregar(valueSize, i);
-            } catch (KeyYaExiste k){
-                System.out.print("55555555555");
-                break;
-            }
-        }
-
-        for (int l=0;l<19;l++){
-            id_book=heap1.obtenerYEliminar();
-            int cantidad = (int) heap2.find(id_book).get(0);
-            try {
-                titulo=books.find(id_book).getTitle();
-            } catch (Exception e){
-                break;
-            }
-            System.out.println("Id del libro:" + id_book + "Titulo:" + titulo + "Cantidad:" + cantidad);
-        }*/
         long tiempoFin=System.currentTimeMillis();
         long tiempo= tiempoFin-tiempoInicio;
-        System.out.print("Tiempo de ejecucion de la consulta:"+tiempo);
+        System.out.print("Tiempo de ejecucion de la consulta:"+tiempo+" ms\n");
     }
     public void c3(HashImpl<Long,Book> to_read,HashImpl<Long,Rating> ratings) throws KeyYaExiste {
         long tiempoInicio=System.currentTimeMillis();
@@ -235,7 +153,7 @@ public class Consultas {
 
         long tiempoFin=System.currentTimeMillis();
         long tiempo= tiempoFin-tiempoInicio;
-        System.out.print("Tiempo de ejecucion de la consulta:"+tiempo);
+        System.out.print("Tiempo de ejecucion de la consulta:"+tiempo+" ms\n");
     }
     public void c4(HashImpl<Long,Book> to_read) throws KeyYaExiste {
         long tiempoInicio=System.currentTimeMillis();
@@ -261,7 +179,7 @@ public class Consultas {
         }
         long tiempoFin=System.currentTimeMillis();
         long tiempo= tiempoFin-tiempoInicio;
-        System.out.println("Tiempo de ejecucion de la consulta:"+tiempo);
+        System.out.println("Tiempo de ejecucion de la consulta:"+tiempo+" ms\n");
     }
     public void c5(HashImpl<Long,Book> books) throws KeyYaExiste {
         long tiempoInicio=System.currentTimeMillis();
@@ -304,6 +222,6 @@ public class Consultas {
         }
         long tiempoFin=System.currentTimeMillis();
         long tiempo= tiempoFin-tiempoInicio;
-        System.out.println("Tiempo de ejecucion de la consulta:"+tiempo);
+        System.out.println("Tiempo de ejecucion de la consulta:"+tiempo+" ms\n");
     }
 }
