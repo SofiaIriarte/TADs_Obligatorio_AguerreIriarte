@@ -1,10 +1,6 @@
-import tads.Hash.Hash;
 import tads.Hash.HashImpl;
-import tads.Heap.HeapMax;
-import tads.LinkedList.LinkedList;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
@@ -17,53 +13,55 @@ public class CargaDeDatos {
     private String line = "";
     private String cvsSplitBy = ",";
 
-    public HashImpl<Long, Book> cargaBooks() throws IOException {
-        HashImpl<Long, Book> books = new HashImpl<>(9998);
+   /* public LinkedList<Long> id_books() throws IOException {
+        LinkedList<Long> id_books = new LinkedList();
         try {
             br = new BufferedReader(new FileReader(booksFile));
             line = br.readLine();
             line = br.readLine();
             while (line != null) {
-                if (!(line.contains(",\"nan\"") || line.contains(",NaN") || line.contains(",nan"))) {
-                    String[] datos = identificadorDeComas(line);
-                    Author[] authors = new Author[datos.length - 7];//Resto 7 porque es la cantidad de datos que tienen cantidad fija. (No son autores)
-                    int position = 0;
-                    int i;
-                    for (i = 2; i < 2 + authors.length; i++) {
-                        authors[position] = new Author(datos[i]);
-                        position++;
-                    }
-                    Book libro = new Book();
-                    libro.setBook_id(Long.parseLong(datos[0]));
-                    libro.setIsbn(datos[1]);
-                    libro.setAuthor(authors);
-                    libro.setOriginal_publication_year(Integer.parseInt(datos[i]));
-                    libro.setOriginal_title(datos[i + 1]);
-                    libro.setTitle(datos[i + 2]);
-                    libro.setLanguage_code(datos[i + 3]);
-                    libro.setImage_url(datos[i + 4]);
-                    books.put(Long.parseLong(datos[0]), libro);
-                    line = br.readLine();
-                } else{
-                    String[] datos = identificadorDeComas(line);
-                    Author[] authors = new Author[datos.length - 7];//Resto 7 porque es la cantidad de datos que tienen cantidad fija. (No son autores)
-                    int position = 0;
-                    int i;
-                    for (i = 2; i < 2 + authors.length; i++) {
-                        authors[position] = new Author(datos[i]);
-                        position++;
-                    }
-                    Book libro = new Book();
-                    libro.setBook_id(Long.parseLong(datos[0]));
-                    libro.setAuthor(authors);
-                    libro.setOriginal_publication_year(0000);
-                    libro.setOriginal_title(datos[i + 1]);
-                    libro.setTitle(datos[i + 2]);
-                    libro.setLanguage_code(datos[i + 3]);
-                    books.put(Long.parseLong(datos[0]), libro);
-                    line = br.readLine();
+                String[] datos = identificadorDeComas(line);
+                id_books.add(Long.parseLong(datos[0]));
+                line = br.readLine();
+            }
+        } catch (IOException e) {
+            System.out.print("Error al cargar los datos, intente de nuevo");
+        }
+        br.close();
+        return id_books;
+    }*/
+
+    public HashImpl<Long, Book> cargaBooks() throws IOException {
+        int contador = 0;
+        HashImpl<Long, Book> books = new HashImpl<>(10000);
+        try {
+            br = new BufferedReader(new FileReader(booksFile));
+            line = br.readLine();
+            line = br.readLine();
+            while (line != null) {
+                String[] datos = identificadorDeComas(line);
+                Author[] authors = new Author[datos.length - 7];//Resto 7 porque es la cantidad de datos que tienen cantidad fija. (No son autores)
+                int position = 0;
+                int i;
+                for (i = 2; i < 2 + authors.length; i++) {
+                    authors[position] = new Author(datos[i]);
+                    position++;
                 }
-             }
+                Book libro = null;
+                try {
+                    if (datos[i] == null) {
+                        libro = new Book(Long.parseLong(datos[0]), datos[1], authors, null, datos[i + 1], datos[i + 2], datos[i + 3], datos[i + 4]);
+                    } else {
+                        libro = new Book(Long.parseLong(datos[0]), datos[1], authors, Integer.parseInt(datos[i]), datos[i + 1], datos[i + 2], datos[i + 3], datos[i + 4]);
+                    }
+                } catch (Exception e) {
+                    System.out.println(line);
+                }
+                books.put(libro.getBook_id(), libro);
+                System.out.println(contador);
+                contador++;
+                line = br.readLine();
+            }
         } catch (IOException e) {
             System.out.print("Error al cargar los datos, intente de nuevo");
         }
@@ -71,50 +69,28 @@ public class CargaDeDatos {
         return books;
     }
 
-    public HashImpl<Long, Rating> cargaRatings(HashImpl<Long, Book> books) throws IOException{
-        int contador=0;
+    public HashImpl<Long, Rating> cargaRatings(HashImpl<Long, Book> books) throws IOException {
         Book libroAEncontrar;
         HashImpl<Long, Rating> ratings = new HashImpl<>(6000000);
+        HashImpl<Long, User> hashUsuarios = ObligatorioImp.getUsers();
         try {
             br = new BufferedReader(new FileReader(ratingsFile));
-            line=br.readLine();
-            line=br.readLine();
+            line = br.readLine();
+            line = br.readLine();
             while (line != null) {
-                if (!(line.contains(",\"nan\"")||  line.contains(",NaN")||  line.contains(",nan"))){
-                    String[] datos = identificadorDeComas(line);
-                    libroAEncontrar = books.find(Long.parseLong(datos[1]));
-                    if (libroAEncontrar != null) {
-                        try {
-                            User user = new User(Long.parseLong(datos[0]));
-                            Rating dato = new Rating(Integer.parseInt(datos[2]),user,libroAEncontrar);
-                            ratings.put(user.getUser_id(),dato);
-                            contador++;
-                        } catch (Exception e ){
-                            contador++;
-                            System.out.println("Error en linea"+contador);
-                        }
-                    } else {
-                        try {
-                            Book book = new Book();
-                            book.setBook_id(Long.parseLong(datos[1]));
-                            book.setTitle(null);
-                            book.setAuthor(null);
-                            book.setImage_url(null);
-                            book.setIsbn(null);
-                            book.setLanguage_code("nan");
-                            book.setOriginal_publication_year(0000);
-                            book.setOriginal_title(null);
-                            User user = new User(Long.parseLong(datos[0]));
-                            Rating dato = new Rating(Integer.parseInt(datos[2]),user,book);
-                            ratings.put(user.getUser_id(),dato);
-                            contador++;
-                        } catch (Exception e) {
-                            contador++;
-                            System.out.println("Error en linea"+contador);
-                        }
+                String[] datos = line.split(cvsSplitBy);
+                libroAEncontrar = books.find(Long.parseLong(datos[1]));
+                if (libroAEncontrar != null) {
+                    User userTemp = hashUsuarios.find(Long.parseLong(datos[0]));
+                    if (userTemp == null) {
+                        userTemp = new User(Long.parseLong(datos[0]));
+                        hashUsuarios.put(Long.parseLong(datos[0]), userTemp);
                     }
+                    Rating ratingTemp = new Rating(Integer.parseInt(datos[2]), userTemp, libroAEncontrar);
+                    userTemp.getRatings().add(ratingTemp);
+                    ratings.put(Long.parseLong(datos[0]), ratingTemp);
                 }
-                line=br.readLine();
+                line = br.readLine();
             }
         } catch (IOException e) {
             System.out.print("Error al cargar los datos, intente de nuevo");
@@ -122,40 +98,42 @@ public class CargaDeDatos {
         br.close();
         return ratings;
     }
-    public HashImpl<Long,Book> cargaTo_Read(HashImpl<Long,Book> book) throws IOException{
-        HashImpl<Long,Book> to_read = new HashImpl<>(912705);
+
+    public HashImpl<Long, Book> cargaTo_Read(HashImpl<Long, Book> book) throws IOException {
+        int contador = 0;
+        HashImpl<Long, Book> to_read = new HashImpl<>(912705);
         try {
             br = new BufferedReader(new FileReader(to_readFile));
-            line=br.readLine();
-            line=br.readLine();
+            line = br.readLine();
+            line = br.readLine();
             while (line != null) {
                 String[] datos = identificadorDeComas(line);
-                long id_user= Long.parseLong(datos[0]);
-                User user=new User(id_user);
+                long id_user = Long.parseLong(datos[0]);
+                User user = new User(id_user);
                 user.setUser_id(id_user);
-                long book_id= Long.parseLong(datos[1]);
-                try {
-                    Book book1 = book.find(book_id);
+                long book_id = Long.parseLong(datos[1]);
+                for (int i = 0; i < 10000; i++) {
                     try {
-                        User[] users = book1.getReserved_to_read();
-                        User[] userList = new User[users.length+1];
-                        for (int l=0;l<users.length;l++){
-                            userList[l]=users[l];
+                        if (book_id == book.find((long) i).getBook_id()) {
+                            User[] users = book.find((long) i).getReserved_to_read();
+                            User[] userList = new User[users.length];
+                            for (int l = 0; l < users.length; l++) {
+                                userList[i] = users[i];
+                            }
+                            userList[-1] = user;
+                            book.find(book_id).setReserved_to_read(userList);
+                            Book bookAdd = book.find((long) i);
+                            to_read.put(book_id, bookAdd);
                         }
-                        userList[users.length-1]=user;
-                        book1.setReserved_to_read(userList);
-                    } catch (Exception e) {
-                        User[] userList = new User[1];
-                        userList[0] = user;
-                        book1.setReserved_to_read(userList);
+                    } catch (NullPointerException n) {
+                        break;
                     }
-                    to_read.put(book_id,book1);
-                    line=br.readLine();
-                } catch (Exception e){
-                    line=br.readLine();
-                }            }
-        } catch (Exception e){
-                line=null;
+                }
+                contador++;
+                line = br.readLine();
+            }
+        } catch (IOException e) {
+            System.out.print("Error al cargar los datos, intente de nuevo");
         }
         br.close();
         return to_read;
@@ -177,7 +155,11 @@ public class CargaDeDatos {
                         String[] array2 = Arrays.copyOf(datosSeparados, datosSeparados.length + 1);
                         datosSeparados = array2;
                     }
-                    datosSeparados[cantidad] = aux;
+                    if (!(aux.equals("\"nan\"") || aux.equals("NaN") || aux.equals("nan"))) {
+                        datosSeparados[cantidad] = aux;
+                    } else {
+                        datosSeparados[cantidad] = null;
+                    }
                     aux = "";
                     cantidad++;
                 }

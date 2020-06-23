@@ -1,36 +1,36 @@
 public class Rating {
 
-    private int rating;
-    private User user_id;
-    private Book book_id;
+    private Integer rating;
+    private User user;
+    private Book book;
 
-    public Rating(int rating, User user_id, Book book_id) {
+    public Rating(Integer rating, User user, Book book) {
         this.rating = rating;
-        this.user_id = user_id;
-        this.book_id = book_id;
+        this.user = user;
+        this.book = book;
     }
 
-    public int getRating() {
+    public Integer getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(Integer rating) {
         this.rating = rating;
     }
 
-    public User getUser_id() {
-        return user_id;
+    public User getUser() {
+        return user;
     }
 
-    public void setUser_id(User user_id) {
-        this.user_id = user_id;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public Book getBook_id() {
-        return book_id;
+    public Book getBook() {
+        return book;
     }
 
-    public void setBook_id(Book book_id) {
-        this.book_id = book_id;
+    public void setBook(Book book) {
+        this.book = book;
     }
 }

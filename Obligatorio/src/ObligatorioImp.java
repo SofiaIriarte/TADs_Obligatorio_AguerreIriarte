@@ -19,7 +19,15 @@ public class ObligatorioImp implements Obligatorio {
     private static HashImpl<Long,Book> to_read;
     static Scanner br = new Scanner(System.in);
 
-    public static void main(String[] args) throws IOException, KeyYaExiste {
+    public static HashImpl<Long, User> getUsers() {
+        return users;
+    }
+
+    public static HashImpl<Long, Rating> getRatings() {
+        return ratings;
+    }
+    public ObligatorioImp() throws IOException, KeyYaExiste {
+        users = new HashImpl<>(1000);
         Principal();
     }
 
@@ -38,6 +46,11 @@ public class ObligatorioImp implements Obligatorio {
             long tiempoFin = System.currentTimeMillis();
             long tiempo = tiempoFin - tiempoInicio;
             System.out.print("Carga de datos exitosa, tiempo de ejecución de la carga:" + tiempo + " ms\n");
+            for (int i=0;i<6000000;i++){
+                if (users.find((long) i)!=null){
+                    System.out.println(users.find((long)i).getUser_id());
+                }
+            }
             Principal();
         }
         if (numero == 2) {
@@ -84,28 +97,28 @@ public class ObligatorioImp implements Obligatorio {
         }
         if (numero==3){
             try {
-                temp.c3(to_read, ratings);
+                temp.c3();
             } catch (KeyYaExiste k) {
                 System.out.print("No es posible realizar esta consulta\n");
             }
             consultas();
         }
-        if (numero==4){
+        /*if (numero==4){
             try {
                 temp.c4(to_read);
             } catch (KeyYaExiste k) {
                 System.out.print("No es posible realizar esta consulta\n");
             }
             consultas();
-        }
-        if (numero==5){
+        }*/
+       /* if (numero==5){
             try {
                 temp.c5(books);
             } catch (KeyYaExiste k) {
                 System.out.print("No es posible realizar esta consulta\n");
             }
             consultas();
-        }
+        }*/
         if (numero!=1&&numero!=2&&numero!=3&&numero!=4&&numero!=5&&numero!=6){
             System.out.print("Opcion no valida, intente nuevamente");
             consultas();
