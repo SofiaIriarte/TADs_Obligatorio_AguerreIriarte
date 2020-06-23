@@ -110,48 +110,5 @@ public class ObligatorioImp implements Obligatorio {
             System.out.print("Opcion no valida, intente nuevamente");
             consultas();
         }
-
-        /*switch (numero) {
-            case 1:
-                try {
-                    temp.c1(to_read,books);
-                } catch (KeyYaExiste k) {
-                    System.out.print("No es posible realizar esta consulta\n");
-                }
-                consultas();
-            case 2:
-                try {
-                    temp.c2(to_read, books);
-                } catch (KeyYaExiste k) {
-                    System.out.print("No es posible realizar esta consulta\n");
-                }
-                consultas();
-            case 3:
-                try {
-                    temp.c3(to_read, ratings);
-                } catch (KeyYaExiste k) {
-                    System.out.print("No es posible realizar esta consulta\n");
-                }
-                consultas();
-            case 4:
-                try {
-                    temp.c4(to_read);
-                } catch (KeyYaExiste k) {
-                    System.out.print("No es posible realizar esta consulta\n");
-                }
-                consultas();
-            case 5:
-                try {
-                    temp.c5(books);
-                } catch (KeyYaExiste k) {
-                    System.out.print("No es posible realizar esta consulta\n");
-                }
-                consultas();
-            case 6:
-                break;
-            default:
-                System.out.print("Opcion no valida, intente nuevamente");
-                consultas();
-        }*/
     }
 }
