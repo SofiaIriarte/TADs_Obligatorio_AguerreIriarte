@@ -13,6 +13,7 @@ import java.time.Year;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.SplittableRandom;
 
 public class Consultas {
 
@@ -200,24 +201,110 @@ public class Consultas {
 
     public void c4(HashImpl<Long,Book> to_read) throws KeyYaExiste {
         long tiempoInicio=System.currentTimeMillis();
-        String cod_idioma=null;
-        int sizeTo_Read = 100000000;
+        String cod_idioma="eng";
         int cantidad=0;
-        HeapMax<String,Integer> idiomas = new HeapMax<>(sizeTo_Read);
-        for (int i=0;i<sizeTo_Read;i++){
-            Book algo = to_read.find((long)i);
-            cod_idioma = algo.getLanguage_code();
-            cantidad = algo.getReserved_to_read().length;
-            try {
-                idiomas.agregar(cod_idioma,cantidad);
-            } catch (KeyYaExiste k) {
-                int cantidadNew = idiomas.obtenerYEliminar(); //como se que esta es la misma key??
-                cantidadNew += cantidad;
-                idiomas.agregar(cod_idioma,cantidadNew);
+        String cod_idioma1="en-US";
+        int cantidad1=1;
+        String cod_idioma2="en-CA";
+        int cantidad2=2;
+        String cod_idioma3="spa";
+        int cantidad3=3;
+        String cod_idioma4="en-GB";
+        int cantidad4=4;
+        String cod_idioma5="fre";
+        int cantidad5=5;
+        String cod_idioma6="por";
+        int cantidad6=6;
+        HeapMax<Integer,Book> cons = new HeapMax<>(912705);
+        LinkedList idiomasList=new LinkedList();
+        LinkedList idiomasList1=new LinkedList();
+        LinkedList idiomasList2=new LinkedList();
+        LinkedList idiomasList3=new LinkedList();
+        LinkedList idiomasList4=new LinkedList();
+        LinkedList idiomasList5=new LinkedList();
+        LinkedList idiomasList6=new LinkedList();
+        HeapMax<Integer,LinkedList> idiomas = new HeapMax<>(10);
+        HashImpl<Long,Book> consInt = new HashImpl<>(912705);
+        long id_book=0;
+        for (long i=1;i<9998;i++) {
+            int counter = 0;
+            try{
+                if (to_read.find(i).getBook_id() == i) {
+                    counter = to_read.find(i).getReserved_to_read().length;
+                    try {
+                        cons.agregar(counter, to_read.find(i));
+                    } catch (Exception e) {
+                        i++;
+                    }
+                    consInt.put(to_read.find(i).getBook_id(),to_read.find(i));
+                }
+            } catch(Exception n){
+                i++;
             }
         }
+        int m=1;
+        while(m<9998) {
+            try {
+                Book book=consInt.find((long)m);
+                if (book.getLanguage_code() == cod_idioma) {
+                    cantidad++;
+                    m++;
+                }
+                else if (book.getLanguage_code() == cod_idioma1) {
+                    cantidad1++;
+                    m++;
+                }
+                else if (book.getLanguage_code() == cod_idioma2) {
+                    cantidad2++;
+                    m++;
+                }
+                else if (book.getLanguage_code() == cod_idioma3) {
+                    cantidad3++;
+                    m++;
+                }
+                else if (book.getLanguage_code() == cod_idioma4) {
+                    cantidad4++;
+                    m++;
+                }
+                else if (book.getLanguage_code() == cod_idioma5) {
+                    cantidad5++;
+                    m++;                }
+                else if (book.getLanguage_code() == cod_idioma6) {
+                    cantidad6++;
+                    m++;
+                } else {
+                    m++;
+                }
+            } catch (Exception e){
+                m++;
+            }
+        }
+        System.out.println(cantidad+"   "+cantidad1+"     "+cantidad2+"      "+cantidad3+"        "+cantidad4+"        "+cantidad5+"         "+cantidad6);
+        idiomasList.add(cantidad);
+        idiomasList.add(cod_idioma);
+        idiomas.agregar(cantidad+8,idiomasList);
+        idiomasList1.add(cantidad1);
+        idiomasList1.add(cod_idioma1);
+        idiomas.agregar(cantidad1,idiomasList1);
+        idiomasList2.add(cantidad2);
+        idiomasList2.add(cod_idioma2);
+        idiomas.agregar(cantidad2,idiomasList2);
+        idiomasList3.add(cantidad3);
+        idiomasList3.add(cod_idioma3);
+        idiomas.agregar(cantidad3,idiomasList3);
+        idiomasList4.add(cantidad4);
+        idiomasList4.add(cod_idioma4);
+        idiomas.agregar(cantidad4,idiomasList4);
+        idiomasList5.add(cantidad5);
+        idiomasList5.add(cod_idioma5);
+        idiomas.agregar(cantidad5,idiomasList5);
+        idiomasList6.add(cantidad6);
+        idiomasList6.add(cod_idioma6);
+        idiomas.agregar(cantidad6,idiomasList6);
         for (int j=0;j<5;j++){
-            cantidad = idiomas.obtenerYEliminar(); //como obtengo mi key?
+            LinkedList lista =idiomas.obtenerYEliminar();
+            cantidad = (int) lista.get(0);
+            //cod_idioma = (String) lista.get(1);
             System.out.println("Codigo del idioma:"+cod_idioma+"Cantidad:"+cantidad);
         }
         long tiempoFin=System.currentTimeMillis();
