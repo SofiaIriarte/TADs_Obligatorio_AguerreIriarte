@@ -1,5 +1,6 @@
 import tads.Hash.Hash;
 import tads.Hash.HashImpl;
+import tads.Hash.HashNode;
 import tads.Heap.HeapMax;
 import tads.Heap.HeapMin;
 import tads.Heap.KeyYaExiste;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Iterator;
 
 public class Consultas {
 
@@ -19,6 +21,7 @@ public class Consultas {
         String titulo="";
         HeapMax<Integer,Book> cons = new HeapMax<>(912705);
         HashImpl<Long,Integer> consInt = new HashImpl<>(912705);
+        int consSize=0;
         long id_book=0;
         int counter=0;
         for (long i=1;i<9998;i++){
@@ -30,9 +33,10 @@ public class Consultas {
                         i++;
                     }
                     cons.agregar(counter, to_read.find(i));
+                    consSize++;
                     consInt.put(to_read.find(i).getBook_id(),counter);
                 }
-            } catch (NullPointerException n){
+            } catch (Exception n){
                 i++;
             }
         }
@@ -73,7 +77,7 @@ public class Consultas {
                 }
                 consInt.put(to_read.find(i).getBook_id(), counter);
                 }
-            } catch(NullPointerException n){
+            } catch(Exception n){
                 i++;
             }
         }
@@ -95,66 +99,105 @@ public class Consultas {
         long tiempo= tiempoFin-tiempoInicio;
         System.out.print("Tiempo de ejecucion de la consulta:"+tiempo+" ms\n");
     }
-    public void c3(HashImpl<Long,Book> to_read,HashImpl<Long,Rating> ratings) throws KeyYaExiste {
-        long tiempoInicio=System.currentTimeMillis();
-        HashImpl<Long,Rating> ratings1 = ratings;
-        int sizeTo_Read= 100000000;
-        HeapMax<Long, LinkedList> heap3 = new HeapMax(sizeTo_Read);
-        for (int i=0;i<1000;i++){
-            int counter=0;
-            Rating hola= (Rating) ratings1.find((long) i);
-            User id_user=hola.getUser_id();
-            LinkedList datos = new LinkedList<>();
-            datos.addFirst(id_user);
-            datos.add(counter);
-            try {
-                heap3.agregar(id_user.getUser_id(),datos);
-            } catch (KeyYaExiste k){
-                LinkedList newDatos = heap3.obtenerYEliminar();
-                long id_userNew = (long) newDatos.get(0);
-                int counterNew = (int) newDatos.get(1);
-                counterNew++;
-                LinkedList datosNew=null;
-                datosNew.addFirst(id_userNew);
-                datos.add(counterNew);
-                heap3.agregar(id_userNew,datosNew);
-            }
-        }
-        int cantidadEva;
-        int ratingProm;
-        HeapMax<Long, LinkedList<Integer>> conRating = new HeapMax(9);
-        for (int l=0;l<9;l++){
-            LinkedList extraccion;
-            extraccion = heap3.obtenerYEliminar();
-            long id_userNew = (Long) extraccion.get(0);
-            cantidadEva = (int) extraccion.get(1);
-            ratingProm=0;
-            for (int i=0;i<1000;i++){
-                Rating hola1 = (Rating) ratings1.find((long) i);
-                if (id_userNew==hola1.getUser_id().getUser_id()){ //revisar
-                    ratingProm+=hola1.getRating();
+
+    public void c3() throws KeyYaExiste {
+        long tiempoInicio = System.currentTimeMillis();
+        Long[] arrayDeUsuarios = new Long[10];
+        Integer[] arrayDeCantidades = new Integer[10];
+        Float[] arrayDePromedio = new Float[10];
+        int lugaresOcupados = 0;
+        boolean ordenadoInicial = false;
+        LinkedList<HashNode<Long, Rating>>[] ratings = ObligatorioImp.getRatings().getMyHash();
+        for (int i = 0; i < ratings.length; i++) {
+            Iterator iteradorRatings = ratings[i].iterator();
+            while (iteradorRatings.hasNext()) {
+                HashNode<Long, Rating> nodoActual = (HashNode<Long, Rating>) iteradorRatings.next();
+                Rating ratingActual = nodoActual.getValue();
+                System.out.println(ratingActual.getUser().getUser_id());
+                for (int j = 0; j < 10; j++) {
+                    arrayDeUsuarios[j] = Long.valueOf(0);
+                }
+                while (lugaresOcupados < 10) {
+//                    System.out.println(lugaresOcupados);
+//                    for (int j =0;j<10;j++){
+//                        System.out.println(arrayDeUsuarios[j]);
+//                    }
+                    boolean usuarioDuplicado = false;
+                    for (int z = 0; z < 10; z++) {
+                        if (ratingActual.getUser().getUser_id() != null && arrayDeUsuarios[z] == ratingActual.getUser().getUser_id()) {
+                            usuarioDuplicado = true;
+                        }
+                    }
+                    if (!usuarioDuplicado) {
+                        arrayDeUsuarios[lugaresOcupados] = Long.valueOf(ratingActual.getUser().getUser_id());
+                        lugaresOcupados++;
+                        if (iteradorRatings.hasNext()) {
+                            nodoActual = (HashNode<Long, Rating>) iteradorRatings.next();
+                            ratingActual = nodoActual.getValue();
+                        } else {
+                            lugaresOcupados=12;
+                        }
+                    }
+                }
+                System.out.println("Primer while funca");
+                while (ordenadoInicial == false) {
+                    long aux;
+                    int position = 0;
+                    for (int z = 0; z < arrayDeUsuarios.length; z++) {//como el tamaño es chico usar un algoritmo mas eficiente no produce mayores beneficios
+                        position = z;
+                        aux = ObligatorioImp.getUsers().find(arrayDeUsuarios[z]).getRatings().getSize();
+                        while (position > 0 && arrayDeUsuarios[z - 1] > aux) {
+                            arrayDeUsuarios[position] = arrayDeUsuarios[position - 1];
+                            position--;
+                        }
+                        arrayDeUsuarios[position] = aux;
+                    }
+                    ordenadoInicial = true;
+                }
+                System.out.println("Segundo while funca");
+                boolean coincidencia = false;
+                for (int z = 0; z < 10; z++) {
+                    if (arrayDeUsuarios[z] == ratingActual.getUser().getUser_id()) {
+                        coincidencia = true;
+                    }
+                    if (coincidencia == false && ObligatorioImp.getUsers().find((long) ratingActual.getUser().getUser_id()).getRatings().getSize() > ObligatorioImp.getUsers().find(arrayDeUsuarios[9]).getRatings().getSize()) {
+                        arrayDeUsuarios[9] = Long.valueOf(ratingActual.getUser().getUser_id());
+                        long temp = 0;
+                        int position1 = 0;
+                        for (int j = 0; j < arrayDeUsuarios.length; j++) {//como el tamaño es chico usar un algoritmo mas eficiente no produce mayores beneficios
+                            position1 = j;
+                            temp = ObligatorioImp.getUsers().find(arrayDeUsuarios[j]).getRatings().getSize();
+                            while (position1 > 0 && arrayDeUsuarios[j - 1] > temp) {
+                                arrayDeUsuarios[position1] = arrayDeUsuarios[position1 - 1];
+                                position1--;
+                            }
+                            arrayDeUsuarios[position1] = temp;
+                        }
+                    }
+
                 }
             }
-            LinkedList nuevo = new LinkedList();
-            nuevo.addFirst(id_userNew);
-            nuevo.addFirst(cantidadEva);
-            nuevo.add(ratingProm);
-            conRating.agregar(id_userNew,nuevo);
         }
-        //ordenar segun 3er atributo la lista conRating
-        for (int m=0;m<conRating.getSize();m++){
-            LinkedList<Integer> ultima;
-            ultima = conRating.obtenerYEliminar();
-            int idUser = ultima.get(0);
-            cantidadEva = ultima.get(1);
-            ratingProm=ultima.get(2);
-            System.out.println("Id del usuario:" + idUser + "Cantidad:" + cantidadEva + "Rating promedio:" + ratingProm);
-        }
+        long tiempoFin = System.currentTimeMillis();
+        long tiempo = tiempoFin - tiempoInicio;
+        for (int i = 0; i < 10; i++) {
+            int promedio = 0;
+            User usuariotemp = ObligatorioImp.getUsers().find(arrayDeUsuarios[i]);
+            for (int j = 0; j < usuariotemp.getRatings().getSize(); j++) {
+                promedio += usuariotemp.getRatings().get(j).getRating();
 
-        long tiempoFin=System.currentTimeMillis();
-        long tiempo= tiempoFin-tiempoInicio;
-        System.out.print("Tiempo de ejecucion de la consulta:"+tiempo+" ms\n");
+            }
+            System.out.println("Id del usuario:" + " " + arrayDeUsuarios[i]);
+            System.out.println("Cantidad:" + " " + usuariotemp.getRatings().getSize());
+            System.out.println("Rating promedio:" + " " + (float) promedio / usuariotemp.getRatings().getSize());
+            System.out.println("Tiempo de ejecución de la consulta:" + tiempo);
+
+
+        }
     }
+
+
+
     public void c4(HashImpl<Long,Book> to_read) throws KeyYaExiste {
         long tiempoInicio=System.currentTimeMillis();
         String cod_idioma=null;

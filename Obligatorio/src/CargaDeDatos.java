@@ -71,57 +71,36 @@ public class CargaDeDatos {
         return books;
     }
 
-    public HashImpl<Long, Rating> cargaRatings(HashImpl<Long, Book> books) throws IOException{
-        int contador=0;
-        Book libroAEncontrar;
-        HashImpl<Long, Rating> ratings = new HashImpl<>(6000000);
-        try {
-            br = new BufferedReader(new FileReader(ratingsFile));
-            line=br.readLine();
-            line=br.readLine();
-            while (line != null) {
-                if (!(line.contains(",\"nan\"")||  line.contains(",NaN")||  line.contains(",nan"))){
-                    String[] datos = identificadorDeComas(line);
+    public HashImpl<Long, Rating> cargaRatings(HashImpl<Long, Book> books) throws IOException {
+            Book libroAEncontrar;
+            HashImpl<Long, Rating> ratings = new HashImpl<>(6000000);
+            HashImpl<Long, User> hashUsuarios = ObligatorioImp.getUsers();
+            try {
+                br = new BufferedReader(new FileReader(ratingsFile));
+                line = br.readLine();
+                line = br.readLine();
+                while (line != null) {
+                    String[] datos = line.split(cvsSplitBy);
                     libroAEncontrar = books.find(Long.parseLong(datos[1]));
                     if (libroAEncontrar != null) {
-                        try {
-                            User user = new User(Long.parseLong(datos[0]));
-                            Rating dato = new Rating(Integer.parseInt(datos[2]),user,libroAEncontrar);
-                            ratings.put(user.getUser_id(),dato);
-                            contador++;
-                        } catch (Exception e ){
-                            contador++;
-                            System.out.println("Error en linea"+contador);
+                        User userTemp = hashUsuarios.find(Long.parseLong(datos[0]));
+                        if (userTemp == null) {
+                            userTemp = new User(Long.parseLong(datos[0]));
+                            hashUsuarios.put(Long.parseLong(datos[0]), userTemp);
                         }
-                    } else {
-                        try {
-                            Book book = new Book();
-                            book.setBook_id(Long.parseLong(datos[1]));
-                            book.setTitle(null);
-                            book.setAuthor(null);
-                            book.setImage_url(null);
-                            book.setIsbn(null);
-                            book.setLanguage_code("nan");
-                            book.setOriginal_publication_year(0000);
-                            book.setOriginal_title(null);
-                            User user = new User(Long.parseLong(datos[0]));
-                            Rating dato = new Rating(Integer.parseInt(datos[2]),user,book);
-                            ratings.put(user.getUser_id(),dato);
-                            contador++;
-                        } catch (Exception e) {
-                            contador++;
-                            System.out.println("Error en linea"+contador);
-                        }
+                        Rating ratingTemp = new Rating(Integer.parseInt(datos[2]), userTemp, libroAEncontrar);
+                        userTemp.getRatings().add(ratingTemp);
+                        ratings.put(Long.parseLong(datos[0]), ratingTemp);
                     }
+                    line = br.readLine();
                 }
-                line=br.readLine();
+            } catch (IOException e) {
+                System.out.print("Error al cargar los datos, intente de nuevo");
             }
-        } catch (IOException e) {
-            System.out.print("Error al cargar los datos, intente de nuevo");
+            br.close();
+            return ratings;
         }
-        br.close();
-        return ratings;
-    }
+
     public HashImpl<Long,Book> cargaTo_Read(HashImpl<Long,Book> book) throws IOException{
         HashImpl<Long,Book> to_read = new HashImpl<>(912705);
         try {

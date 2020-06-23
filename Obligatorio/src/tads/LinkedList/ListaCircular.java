@@ -119,6 +119,11 @@ public class ListaCircular<T> implements List<T> {
     }
 
     @Override
+    public boolean isEmpty() {
+        return false;
+    }
+
+    @Override
     public Iterator<T> iterator() {
         return null;
     }

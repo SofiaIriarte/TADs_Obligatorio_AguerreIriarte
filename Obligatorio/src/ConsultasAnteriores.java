@@ -43,6 +43,76 @@ public class ConsultasAnteriores {
             heap3.put(id_book,valueSize);
             sizeTo_Read--;
         }*/
+
+
+        /*public void c3(HashImpl<Long,Book> to_read,HashImpl<Long,Rating> ratings) throws KeyYaExiste {
+        long tiempoInicio=System.currentTimeMillis();
+        int sizeTo_Read= 6000000;
+        HeapMax<Integer, LinkedList> heap3 = new HeapMax(sizeTo_Read);
+        for (int i=0;i<1000;i++){
+            int counter=1;
+            Rating hola= (Rating) ratings.find((long) i);
+            User id_user=hola.getUser_id();
+            int j=0;
+            while(j<1000&&ratings.find((long)j).getUser_id()==id_user){
+                counter++;
+                j++;
+            }
+            LinkedList datos = new LinkedList<>();
+            datos.addFirst(id_user);
+            datos.add(counter);
+            try {
+                heap3.agregar(counter,datos);
+            } catch (KeyYaExiste k){
+                /*LinkedList newDatos = heap3.obtenerYEliminar();
+                long id_userNew = (long) newDatos.get(0);
+                int counterNew = (int) newDatos.get(1);
+                counterNew++;
+                LinkedList datosNew=null;
+                datosNew.addFirst(id_userNew);
+                datos.add(counterNew);
+                heap3.agregar(id_userNew,datosNew);
+    i++;
+}
+        }
+                int cantidadEva;
+                int ratingProm;
+                HeapMax<Long, LinkedList<Integer>> conRating = new HeapMax(10);
+        for (int l=0;l<10;l++){
+        LinkedList extraccion;
+        extraccion = heap3.obtenerYEliminar();
+        long id_userNew = (Long) extraccion.get(0);
+        cantidadEva = (int) extraccion.get(1);
+        ratingProm=0;
+        for (int i=0;i<1000;i++){
+        Rating hola1 = (Rating) ratings.find((long) i);
+        if (id_userNew==hola1.getUser_id().getUser_id()){ //revisar
+        ratingProm+=hola1.getRating();
+        }
+        }
+        LinkedList nuevo = new LinkedList();
+        nuevo.addFirst(id_userNew);
+        nuevo.addFirst(cantidadEva);
+        nuevo.add(ratingProm);
+        conRating.agregar(id_userNew,nuevo);
+        }
+        //ordenar segun 3er atributo la lista conRating
+        for (int m=0;m<conRating.getSize();m++){
+        LinkedList<Integer> ultima;
+        ultima = conRating.obtenerYEliminar();
+        int idUser = ultima.get(0);
+        cantidadEva = ultima.get(1);
+        ratingProm=ultima.get(2);
+        System.out.println("Id del usuario:" + idUser + "Cantidad:" + cantidadEva + "Rating promedio:" + ratingProm);
+        }
+
+        long tiempoFin=System.currentTimeMillis();
+        long tiempo= tiempoFin-tiempoInicio;
+        System.out.print("Tiempo de ejecucion de la consulta:"+tiempo+" ms\n");
+        }*/
+
+
+
         /*2
         long tiempoInicio=System.currentTimeMillis();
         String titulo=null;

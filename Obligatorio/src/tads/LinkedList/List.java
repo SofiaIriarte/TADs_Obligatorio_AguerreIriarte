@@ -1,3 +1,4 @@
+
 package tads.LinkedList ;
 
 public interface List<L> extends Iterable<L> {
@@ -9,4 +10,6 @@ public interface List<L> extends Iterable<L> {
     public Object get(int position);
 
     public int getSize();
+
+    boolean isEmpty();
 }

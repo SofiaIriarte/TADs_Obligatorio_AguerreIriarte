@@ -5,7 +5,7 @@ import java.util.Iterator;
 public class LinkedList<T> implements List<T> {
 
     private Nodo<T> first = null;
-    private Nodo<T> last;
+    private Nodo<T> last= null;
     private int size=0;
 
     @Override
@@ -108,6 +108,11 @@ public class LinkedList<T> implements List<T> {
 
     public int getSize(){
         return size;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return size==0;
     }
 
     @Override

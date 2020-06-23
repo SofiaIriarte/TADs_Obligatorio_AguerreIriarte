@@ -2,19 +2,19 @@ import tads.LinkedList.LinkedList;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.IOException;
+import tads.LinkedList.LinkedList;
 
 public class User implements Comparable{
 
-    private long user_id;
+    private Long user_id;
     private LinkedList<Book> ListaReservados;
     private LinkedList<Rating> ListaRatings;
 
-    public User(long user_id, LinkedList<Book> listaReservados, LinkedList<Rating> ratings) {
+    /*public User(long user_id, LinkedList<Book> listaReservados, LinkedList<Rating> ratings) {
         this.user_id = user_id;
         ListaReservados = listaReservados;
         this.ListaRatings = ratings;
-    }
+    }*/
 
     public User(long user_id) {
         this.user_id = user_id;
@@ -22,11 +22,11 @@ public class User implements Comparable{
         ListaRatings = new LinkedList<>();
     }
 
-    public long getUser_id() {
+    public Long getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(long user_id) {
+    public void setUser_id(Long user_id) {
         this.user_id = user_id;
     }
 

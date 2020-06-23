@@ -19,10 +19,17 @@ public class ObligatorioImp implements Obligatorio {
     private static HashImpl<Long,Book> to_read;
     static Scanner br = new Scanner(System.in);
 
-    public static void main(String[] args) throws IOException, KeyYaExiste {
-        Principal();
+    public static HashImpl<Long, User> getUsers() {
+        return users;
     }
 
+    public static HashImpl<Long, Rating> getRatings() {
+        return ratings;
+    }
+    public ObligatorioImp() throws IOException, KeyYaExiste {
+        users = new HashImpl<>(1000);
+        Principal();
+    }
     public static void Principal() throws IOException, KeyYaExiste {
         System.out.print("Menu:\nSeleccione la opcion que desee:\n\t" +
                 "1. Carga de datos\n\t" +
@@ -84,7 +91,7 @@ public class ObligatorioImp implements Obligatorio {
         }
         if (numero==3){
             try {
-                temp.c3(to_read, ratings);
+                temp.c3();
             } catch (KeyYaExiste k) {
                 System.out.print("No es posible realizar esta consulta\n");
             }

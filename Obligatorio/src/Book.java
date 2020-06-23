@@ -3,14 +3,14 @@ public class Book {
     private long book_id;
     private String isbn;
     private Author[] author;
-    private int original_publication_year;
+    private Integer original_publication_year;
     private String original_title;
     private String title;
     private String language_code;
     private String image_url;
     private User[] reserved_to_read;
 
-    public Book(long book_id, String isbn, Author[] author, int original_publication_year, String original_title, String title, String language_code, String image_url) {
+    public Book(long book_id, String isbn, Author[] author, Integer original_publication_year, String original_title, String title, String language_code, String image_url) {
         this.book_id = book_id;
         this.isbn = isbn;
         this.author = author;
@@ -48,11 +48,11 @@ public class Book {
         this.author = author;
     }
 
-    public int getOriginal_publication_year() {
+    public Integer getOriginal_publication_year() {
         return original_publication_year;
     }
 
-    public void setOriginal_publication_year(int original_publication_year) {
+    public void setOriginal_publication_year(Integer original_publication_year) {
         this.original_publication_year = original_publication_year;
     }
 
