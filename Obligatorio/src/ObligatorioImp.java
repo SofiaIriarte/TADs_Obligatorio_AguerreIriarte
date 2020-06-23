@@ -11,7 +11,7 @@ import java.lang.reflect.Array;
 import java.util.Date;
 import java.util.Scanner;
 
-public class ObligatorioImp implements Obligatorio {
+public class ObligatorioImp{
 
     private static HashImpl<Long, Book> books;
     private static HashImpl<Long, User> users;
@@ -83,7 +83,7 @@ public class ObligatorioImp implements Obligatorio {
         }
         if (numero==2){
             try {
-                temp.c2(to_read, books);
+                temp.c2(ratings, books);
             } catch (KeyYaExiste k) {
                 System.out.print("No es posible realizar esta consulta\n");
             }

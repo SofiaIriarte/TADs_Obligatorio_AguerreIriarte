@@ -26,40 +26,42 @@ public class CargaDeDatos {
             while (line != null) {
                 if (!(line.contains(",\"nan\"") || line.contains(",NaN") || line.contains(",nan"))) {
                     String[] datos = identificadorDeComas(line);
-                    Author[] authors = new Author[datos.length - 7];//Resto 7 porque es la cantidad de datos que tienen cantidad fija. (No son autores)
+                    LinkedList<Author> authors = new LinkedList<>();
                     int position = 0;
                     int i;
-                    for (i = 2; i < 2 + authors.length; i++) {
-                        authors[position] = new Author(datos[i]);
+                    for (i = 2; i < 2 + authors.getSize(); i++) {
+                        Author autor = new Author(datos[i]);
+                        authors.get(position).setName(autor.getName());
                         position++;
                     }
                     Book libro = new Book();
                     libro.setBook_id(Long.parseLong(datos[0]));
                     libro.setIsbn(datos[1]);
                     libro.setAuthor(authors);
-                    libro.setOriginal_publication_year(Integer.parseInt(datos[i]));
-                    libro.setOriginal_title(datos[i + 1]);
-                    libro.setTitle(datos[i + 2]);
-                    libro.setLanguage_code(datos[i + 3]);
-                    libro.setImage_url(datos[i + 4]);
+                    libro.setOriginal_publication_year(Integer.parseInt(datos[3]));
+                    libro.setOriginal_title(datos[4]);
+                    libro.setTitle(datos[5]);
+                    libro.setLanguage_code(datos[6]);
+                    libro.setImage_url(datos[7]);
                     books.put(Long.parseLong(datos[0]), libro);
                     line = br.readLine();
                 } else{
                     String[] datos = identificadorDeComas(line);
-                    Author[] authors = new Author[datos.length - 7];//Resto 7 porque es la cantidad de datos que tienen cantidad fija. (No son autores)
+                    LinkedList<Author> authors = new LinkedList<>();
                     int position = 0;
                     int i;
-                    for (i = 2; i < 2 + authors.length; i++) {
-                        authors[position] = new Author(datos[i]);
+                    for (i = 2; i < 2 + authors.getSize(); i++) {
+                        Author autor=new Author(datos[i]);
+                        authors.get(position).setName(autor.getName());
                         position++;
                     }
                     Book libro = new Book();
                     libro.setBook_id(Long.parseLong(datos[0]));
                     libro.setAuthor(authors);
                     libro.setOriginal_publication_year(0000);
-                    libro.setOriginal_title(datos[i + 1]);
-                    libro.setTitle(datos[i + 2]);
-                    libro.setLanguage_code(datos[i + 3]);
+                    libro.setOriginal_title(datos[4]);
+                    libro.setTitle(datos[5]);
+                    libro.setLanguage_code(datos[6]);
                     books.put(Long.parseLong(datos[0]), libro);
                     line = br.readLine();
                 }
@@ -72,6 +74,7 @@ public class CargaDeDatos {
     }
 
     public HashImpl<Long, Rating> cargaRatings(HashImpl<Long, Book> books) throws IOException {
+            int counter=0;
             Book libroAEncontrar;
             HashImpl<Long, Rating> ratings = new HashImpl<>(6000000);
             HashImpl<Long, User> hashUsuarios = ObligatorioImp.getUsers();
@@ -88,9 +91,13 @@ public class CargaDeDatos {
                             userTemp = new User(Long.parseLong(datos[0]));
                             hashUsuarios.put(Long.parseLong(datos[0]), userTemp);
                         }
-                        Rating ratingTemp = new Rating(Integer.parseInt(datos[2]), userTemp, libroAEncontrar);
+                        Rating ratingTemp = new Rating();
+                        ratingTemp.setBook(libroAEncontrar);
+                        ratingTemp.setRating(Integer.parseInt(datos[2]));
+                        ratingTemp.setUser(userTemp);
                         userTemp.getRatings().add(ratingTemp);
                         ratings.put(Long.parseLong(datos[0]), ratingTemp);
+                        counter++;
                     }
                     line = br.readLine();
                 }

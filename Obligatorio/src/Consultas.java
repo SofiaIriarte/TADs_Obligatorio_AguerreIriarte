@@ -60,26 +60,35 @@ public class Consultas {
         System.out.print("Tiempo de ejecucion de la consulta: "+tiempo+" ms\n");
     }
 
-    public void c2(HashImpl<Long,Book> to_read,HashImpl<Long,Book> books) throws KeyYaExiste {
-        long tiempoInicio=System.currentTimeMillis();
-        String titulo="";
-        HeapMax<Integer,Book> cons = new HeapMax<>(912705);
-        HashImpl<Long,Integer> consInt = new HashImpl<>(912705);
-        long id_book=0;
-        for (long i=1;i<9998;i++) {
+    public void c2(HashImpl<Long,Rating> rating,HashImpl<Long,Book> books) throws KeyYaExiste {
+        long tiempoInicio = System.currentTimeMillis();
+        String titulo = "";
+        HeapMax<Integer, Book> cons = new HeapMax<>(6000000);
+        HashImpl<Long, Integer> consInt = new HashImpl<>(6000000);
+        long id_book = 0;
+        for (long j=1;j<9998;j++){
             int counter = 0;
-            try{
-                if (to_read.find(i).getBook_id() == i) {
-                counter = to_read.find(i).getReserved_to_read().length;
+            int i=0;
+            while (i < 59762) { //5976238 este deberia ser el maximo de i
                 try {
-                    cons.agregar(counter, to_read.find(i));
-                } catch (Exception e) {
+                    Book book =rating.find((long)i).getBook();
+                    if (book.getBook_id() == j) {
+                        counter++;
+                        i++;
+                    }
+                    else{
+                        i++;
+                    }
+                } catch (Exception n) {
                     i++;
                 }
-                consInt.put(to_read.find(i).getBook_id(), counter);
-                }
-            } catch(Exception n){
-                i++;
+            }
+            try {
+                cons.agregar(counter, books.find(j));
+                consInt.put(j, counter);
+                j++;
+            } catch (Exception e) {
+                j++;
             }
         }
         try{
@@ -185,7 +194,7 @@ public class Consultas {
             int promedio = 0;
             User usuariotemp = ObligatorioImp.getUsers().find(arrayDeUsuarios[i]);
             for (int j = 0; j < usuariotemp.getRatings().getSize(); j++) {
-                promedio += usuariotemp.getRatings().get(j).getRating();
+                //promedio += usuariotemp.getRatings().get(j);//.getRating();
 
             }
             System.out.println("Id del usuario:" + " " + arrayDeUsuarios[i]);
@@ -204,26 +213,20 @@ public class Consultas {
         String cod_idioma="eng";
         int cantidad=0;
         String cod_idioma1="en-US";
-        int cantidad1=1;
+        int cantidad1=0;
         String cod_idioma2="en-CA";
-        int cantidad2=2;
+        int cantidad2=0;
         String cod_idioma3="spa";
-        int cantidad3=3;
+        int cantidad3=0;
         String cod_idioma4="en-GB";
-        int cantidad4=4;
+        int cantidad4=0;
         String cod_idioma5="fre";
-        int cantidad5=5;
+        int cantidad5=0;
         String cod_idioma6="por";
-        int cantidad6=6;
+        int cantidad6=0;
         HeapMax<Integer,Book> cons = new HeapMax<>(912705);
-        LinkedList idiomasList=new LinkedList();
-        LinkedList idiomasList1=new LinkedList();
-        LinkedList idiomasList2=new LinkedList();
-        LinkedList idiomasList3=new LinkedList();
-        LinkedList idiomasList4=new LinkedList();
-        LinkedList idiomasList5=new LinkedList();
-        LinkedList idiomasList6=new LinkedList();
-        HeapMax<Integer,LinkedList> idiomas = new HeapMax<>(10);
+        HeapMax<Integer,Integer> idiomas = new HeapMax<>(1000);
+        HashImpl<Integer,String> idiom = new HashImpl<>(1000);
         HashImpl<Long,Book> consInt = new HashImpl<>(912705);
         long id_book=0;
         for (long i=1;i<9998;i++) {
@@ -233,6 +236,7 @@ public class Consultas {
                     counter = to_read.find(i).getReserved_to_read().length;
                     try {
                         cons.agregar(counter, to_read.find(i));
+
                     } catch (Exception e) {
                         i++;
                     }
@@ -246,30 +250,31 @@ public class Consultas {
         while(m<9998) {
             try {
                 Book book=consInt.find((long)m);
-                if (book.getLanguage_code() == cod_idioma) {
+                String code = book.getLanguage_code();
+                if (code.equals(cod_idioma)) {
                     cantidad++;
                     m++;
                 }
-                else if (book.getLanguage_code() == cod_idioma1) {
+                else if (code.equals(cod_idioma1)) {
                     cantidad1++;
                     m++;
                 }
-                else if (book.getLanguage_code() == cod_idioma2) {
+                else if (code.equals(cod_idioma2)) {
                     cantidad2++;
                     m++;
                 }
-                else if (book.getLanguage_code() == cod_idioma3) {
+                else if (code.equals(cod_idioma3)) {
                     cantidad3++;
                     m++;
                 }
-                else if (book.getLanguage_code() == cod_idioma4) {
+                else if (code.equals(cod_idioma4)) {
                     cantidad4++;
                     m++;
                 }
-                else if (book.getLanguage_code() == cod_idioma5) {
+                else if (code.equals(cod_idioma5)) {
                     cantidad5++;
                     m++;                }
-                else if (book.getLanguage_code() == cod_idioma6) {
+                else if (code.equals(cod_idioma6)) {
                     cantidad6++;
                     m++;
                 } else {
@@ -279,76 +284,104 @@ public class Consultas {
                 m++;
             }
         }
-        System.out.println(cantidad+"   "+cantidad1+"     "+cantidad2+"      "+cantidad3+"        "+cantidad4+"        "+cantidad5+"         "+cantidad6);
-        idiomasList.add(cantidad);
-        idiomasList.add(cod_idioma);
-        idiomas.agregar(cantidad+8,idiomasList);
-        idiomasList1.add(cantidad1);
-        idiomasList1.add(cod_idioma1);
-        idiomas.agregar(cantidad1,idiomasList1);
-        idiomasList2.add(cantidad2);
-        idiomasList2.add(cod_idioma2);
-        idiomas.agregar(cantidad2,idiomasList2);
-        idiomasList3.add(cantidad3);
-        idiomasList3.add(cod_idioma3);
-        idiomas.agregar(cantidad3,idiomasList3);
-        idiomasList4.add(cantidad4);
-        idiomasList4.add(cod_idioma4);
-        idiomas.agregar(cantidad4,idiomasList4);
-        idiomasList5.add(cantidad5);
-        idiomasList5.add(cod_idioma5);
-        idiomas.agregar(cantidad5,idiomasList5);
-        idiomasList6.add(cantidad6);
-        idiomasList6.add(cod_idioma6);
-        idiomas.agregar(cantidad6,idiomasList6);
+        idiomas.agregar(cantidad,cantidad);
+        idiomas.agregar(cantidad1,cantidad1);
+        idiomas.agregar(cantidad2,cantidad2);
+        idiomas.agregar(cantidad3,cantidad3);
+        idiomas.agregar(cantidad4,cantidad4);
+        idiomas.agregar(cantidad5,cantidad5);
+        idiomas.agregar(cantidad6,cantidad6);
+        idiom.put(cantidad,"eng");
+        idiom.put(cantidad1,"en-US");
+        idiom.put(cantidad2,"en-CA");
+        idiom.put(cantidad3,"en-GB");
+        idiom.put(cantidad4,"spa");
+        idiom.put(cantidad5,"fre");
+        idiom.put(cantidad6,"por");
         for (int j=0;j<5;j++){
-            LinkedList lista =idiomas.obtenerYEliminar();
-            cantidad = (int) lista.get(0);
-            //cod_idioma = (String) lista.get(1);
-            System.out.println("Codigo del idioma:"+cod_idioma+"Cantidad:"+cantidad);
+            int cantidadF = idiomas.obtenerYEliminar();
+            String cod_idiomaF = idiom.find(cantidadF);
+            System.out.println("Codigo del idioma: "+cod_idiomaF+" Cantidad: "+cantidadF);
         }
         long tiempoFin=System.currentTimeMillis();
         long tiempo= tiempoFin-tiempoInicio;
         System.out.println("Tiempo de ejecucion de la consulta:"+tiempo+" ms\n");
     }
+
+
     public void c5(HashImpl<Long,Book> books) throws KeyYaExiste {
         long tiempoInicio=System.currentTimeMillis();
         String autor=null;
         int anio_de_publi=0;
-        HeapMin<Long, Integer> anio = new HeapMin<>(10000);
+        HeapMin<Integer, Integer> anio = new HeapMin<>(10000);
+
         for (int i=0;i<10000;i++){
-            long id = books.find((long) i).getBook_id();
-            anio_de_publi = books.find((long) i).getOriginal_publication_year();
-            anio.agregar(id,anio_de_publi);
+            try{
+                Book book = books.find((long) i);
+                long id = book.getBook_id();
+                anio_de_publi = book.getOriginal_publication_year();
+                if (anio_de_publi<0){
+                    anio_de_publi*=(-1);
+                    anio.agregar(anio_de_publi,anio_de_publi);
+                }
+                if (anio_de_publi>0){
+                anio.agregar(anio_de_publi,anio_de_publi);
+                }
+                else {
+                    i++;
+                }
+            }
+            catch (Exception e){
+                i++;
+            }
         }
         anio_de_publi = anio.obtenerYEliminar();
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy");
         LocalDateTime now = LocalDateTime.now();
         int actual = Integer.parseInt(dtf.format(now));
-        while (anio_de_publi<actual){
-            HeapMax<Integer,Author[]> autores = new HeapMax<>(10000);
-            HeapMax<Integer,Integer> autores1 = new HeapMax<>(10000);
-            for (int i=0;i<10000;i++){
+        while (anio_de_publi+1<actual){
+            HeapMax<Integer,LinkedList> autores = new HeapMax<>(10000);
+            HashImpl<LinkedList,Integer> autores1 = new HashImpl<>(10000);
+            for (int i=1;i<9998;i++){
                 int counter=1;
-                if (books.find((long) i).getOriginal_publication_year()==anio_de_publi){
+                Book book=books.find((long) i);
+                int year=book.getOriginal_publication_year();
+                if (year<0){
+                    year*=(-1);
+                }
+                if (year==anio_de_publi){
                     try {
-                        autores.agregar(counter,books.find((long)i).getAuthor());
-                        autores1.agregar(counter,counter);
+                        int m=1;
+                        while(m<9998){
+                            if (books.find((long) m).getAuthor()==books.find((long) i).getAuthor()){
+                                counter++;
+                                m++;
+                            }
+                            m++;
+                        }
+                        LinkedList autorList = new LinkedList();
+                        int size = book.getAuthor().getSize();
+                        for (int k=0;k<size-1;k++){
+                            autorList.add(book.getAuthor().get(k).getName());
+                        }
+                        autores.agregar(counter,autorList);
+                        autores1.put(autorList,counter);
                     } catch (KeyYaExiste k){
-                        Author[] autor1 = autores.obtenerYEliminar();
-                        counter = autores1.obtenerYEliminar();
-                        counter++;
-                        autores.agregar(counter,autor1);
-                        autores1.agregar(counter,counter);
+                        i++;
                     }
                 }
+                else{i++;}
             }
-            for (int i=0;i<20;i++){
-                Author[] autor2 = autores.obtenerYEliminar();
-                int counter = autores1.obtenerYEliminar();
-                System.out.println("Autor:"+autor2+"Anio de publicacion:"+anio_de_publi+"Cantidad:"+counter);
+            try {
+                for (int i=0;i<20;i++){
+                    LinkedList autor2 = autores.obtenerYEliminar();
+                    int counter = autores1.find(autor2);
+                    System.out.println("Autor: "+autor2+" Año de publicacion: "+anio_de_publi+" Cantidad: "+counter);
+                    anio_de_publi++;
+                }
+            } catch (Exception e){
+                anio_de_publi++;
             }
-            anio_de_publi++;
         }
         long tiempoFin=System.currentTimeMillis();
         long tiempo= tiempoFin-tiempoInicio;

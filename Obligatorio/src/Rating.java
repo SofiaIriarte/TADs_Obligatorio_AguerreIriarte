@@ -9,6 +9,9 @@ public class Rating {
         this.user = user;
         this.book = book;
     }
+    public Rating(){
+
+    }
 
     public Integer getRating() {
         return rating;
