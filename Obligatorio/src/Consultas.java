@@ -110,100 +110,70 @@ public class Consultas {
         System.out.print("Tiempo de ejecucion de la consulta:"+tiempo+" ms\n");
     }
 
-    public void c3() throws KeyYaExiste {
-        long tiempoInicio = System.currentTimeMillis();
-        Long[] arrayDeUsuarios = new Long[10];
-        Integer[] arrayDeCantidades = new Integer[10];
-        Float[] arrayDePromedio = new Float[10];
-        int lugaresOcupados = 0;
-        boolean ordenadoInicial = false;
-        LinkedList<HashNode<Long, Rating>>[] ratings = ObligatorioImp.getRatings().getMyHash();
-        for (int i = 0; i < ratings.length; i++) {
-            Iterator iteradorRatings = ratings[i].iterator();
-            while (iteradorRatings.hasNext()) {
-                HashNode<Long, Rating> nodoActual = (HashNode<Long, Rating>) iteradorRatings.next();
-                Rating ratingActual = nodoActual.getValue();
-                System.out.println(ratingActual.getUser().getUser_id());
-                for (int j = 0; j < 10; j++) {
-                    arrayDeUsuarios[j] = Long.valueOf(0);
-                }
-                while (lugaresOcupados < 10) {
-//                    System.out.println(lugaresOcupados);
-//                    for (int j =0;j<10;j++){
-//                        System.out.println(arrayDeUsuarios[j]);
-//                    }
-                    boolean usuarioDuplicado = false;
-                    for (int z = 0; z < 10; z++) {
-                        if (ratingActual.getUser().getUser_id() != null && arrayDeUsuarios[z] == ratingActual.getUser().getUser_id()) {
-                            usuarioDuplicado = true;
-                        }
-                    }
-                    if (!usuarioDuplicado) {
-                        arrayDeUsuarios[lugaresOcupados] = Long.valueOf(ratingActual.getUser().getUser_id());
-                        lugaresOcupados++;
-                        if (iteradorRatings.hasNext()) {
-                            nodoActual = (HashNode<Long, Rating>) iteradorRatings.next();
-                            ratingActual = nodoActual.getValue();
-                        } else {
-                            lugaresOcupados=12;
-                        }
-                    }
-                }
-                System.out.println("Primer while funca");
-                while (ordenadoInicial == false) {
-                    long aux;
-                    int position = 0;
-                    for (int z = 0; z < arrayDeUsuarios.length; z++) {//como el tamaño es chico usar un algoritmo mas eficiente no produce mayores beneficios
-                        position = z;
-                        aux = ObligatorioImp.getUsers().find(arrayDeUsuarios[z]).getRatings().getSize();
-                        while (position > 0 && arrayDeUsuarios[z - 1] > aux) {
-                            arrayDeUsuarios[position] = arrayDeUsuarios[position - 1];
-                            position--;
-                        }
-                        arrayDeUsuarios[position] = aux;
-                    }
-                    ordenadoInicial = true;
-                }
-                System.out.println("Segundo while funca");
-                boolean coincidencia = false;
-                for (int z = 0; z < 10; z++) {
-                    if (arrayDeUsuarios[z] == ratingActual.getUser().getUser_id()) {
-                        coincidencia = true;
-                    }
-                    if (coincidencia == false && ObligatorioImp.getUsers().find((long) ratingActual.getUser().getUser_id()).getRatings().getSize() > ObligatorioImp.getUsers().find(arrayDeUsuarios[9]).getRatings().getSize()) {
-                        arrayDeUsuarios[9] = Long.valueOf(ratingActual.getUser().getUser_id());
-                        long temp = 0;
-                        int position1 = 0;
-                        for (int j = 0; j < arrayDeUsuarios.length; j++) {//como el tamaño es chico usar un algoritmo mas eficiente no produce mayores beneficios
-                            position1 = j;
-                            temp = ObligatorioImp.getUsers().find(arrayDeUsuarios[j]).getRatings().getSize();
-                            while (position1 > 0 && arrayDeUsuarios[j - 1] > temp) {
-                                arrayDeUsuarios[position1] = arrayDeUsuarios[position1 - 1];
-                                position1--;
-                            }
-                            arrayDeUsuarios[position1] = temp;
-                        }
-                    }
-
-                }
+    public void c3(HashImpl<Long,Book> to_read,HashImpl<Long,Rating> ratings) throws KeyYaExiste {
+        long tiempoInicio=System.currentTimeMillis();
+        int sizeTo_Read= 6000000;
+        HeapMax<Integer, LinkedList> heap3 = new HeapMax(sizeTo_Read);
+        for (int i=0;i<1000;i++){
+            int counter=1;
+            Rating hola= (Rating) ratings.find((long) i);
+            User id_user=hola.getUser();
+            int j=0;
+            while(j<1000&&ratings.find((long)j).getUser()==id_user){
+                counter++;
+                j++;
             }
+            LinkedList datos = new LinkedList<>();
+            datos.addFirst(id_user);
+            datos.add(counter);
+            try {
+                heap3.agregar(counter,datos);
+            } catch (KeyYaExiste k){}}
+                /*LinkedList newDatos = heap3.obtenerYEliminar();
+                long id_userNew = (long) newDatos.get(0);
+                int counterNew = (int) newDatos.get(1);
+                counterNew++;
+                LinkedList datosNew=null;
+                datosNew.addFirst(id_userNew);
+                datos.add(counterNew);
+                heap3.agregar(id_userNew,datosNew);
+    i++;
+}
+        }*/
+                int cantidadEva;
+                int ratingProm;
+                HeapMax<Long, LinkedList<Integer>> conRating = new HeapMax(10);
+        /*for (int l=0;l<10;l++){
+        LinkedList extraccion;
+        extraccion = heap3.obtenerYEliminar();
+        long id_userNew = (Long) extraccion.get(0);
+        cantidadEva = (int) extraccion.get(1);
+        ratingProm=0;
+        for (int i=0;i<1000;i++){
+        Rating hola1 = (Rating) ratings.find((long) i);
+        if (id_userNew==hola1.getUser_id().getUser_id()){ //revisar
+        ratingProm+=hola1.getRating();
         }
-        long tiempoFin = System.currentTimeMillis();
-        long tiempo = tiempoFin - tiempoInicio;
-        for (int i = 0; i < 10; i++) {
-            int promedio = 0;
-            User usuariotemp = ObligatorioImp.getUsers().find(arrayDeUsuarios[i]);
-            for (int j = 0; j < usuariotemp.getRatings().getSize(); j++) {
-                //promedio += usuariotemp.getRatings().get(j);//.getRating();
-
-            }
-            System.out.println("Id del usuario:" + " " + arrayDeUsuarios[i]);
-            System.out.println("Cantidad:" + " " + usuariotemp.getRatings().getSize());
-            System.out.println("Rating promedio:" + " " + (float) promedio / usuariotemp.getRatings().getSize());
-            System.out.println("Tiempo de ejecución de la consulta:" + tiempo);
-
-
         }
+        LinkedList nuevo = new LinkedList();
+        nuevo.addFirst(id_userNew);
+        nuevo.addFirst(cantidadEva);
+        nuevo.add(ratingProm);
+        conRating.agregar(id_userNew,nuevo);
+        }*/
+        //ordenar segun 3er atributo la lista conRating
+        for (int m=0;m<conRating.getSize();m++){
+        LinkedList<Integer> ultima;
+        ultima = conRating.obtenerYEliminar();
+        int idUser = ultima.get(0);
+        cantidadEva = ultima.get(1);
+        ratingProm=ultima.get(2);
+        System.out.println("Id del usuario:" + idUser + "Cantidad:" + cantidadEva + "Rating promedio:" + ratingProm);
+        }
+
+        long tiempoFin=System.currentTimeMillis();
+        long tiempo= tiempoFin-tiempoInicio;
+        System.out.print("Tiempo de ejecucion de la consulta:"+tiempo+" ms\n");
     }
 
 
@@ -224,6 +194,24 @@ public class Consultas {
         int cantidad5=0;
         String cod_idioma6="por";
         int cantidad6=0;
+        String cod_idioma7="per";
+        int cantidad7=0;
+        String cod_idioma8="ara";
+        int cantidad8=0;
+        String cod_idioma9="dan";
+        int cantidad9=0;
+        String cod_idioma10="ger";
+        int cantidad10=0;
+        String cod_idioma11="jpn";
+        int cantidad11=0;
+        String cod_idioma12="ind";
+        int cantidad12=0;
+        String cod_idioma13="rum";
+        int cantidad13=0;
+        String cod_idioma14="pol";
+        int cantidad14=0;
+        String cod_idioma15="swe";
+        int cantidad15=0;
         HeapMax<Integer,Book> cons = new HeapMax<>(912705);
         HeapMax<Integer,Integer> idiomas = new HeapMax<>(1000);
         HashImpl<Integer,String> idiom = new HashImpl<>(1000);
@@ -277,27 +265,66 @@ public class Consultas {
                 else if (code.equals(cod_idioma6)) {
                     cantidad6++;
                     m++;
-                } else {
+                }
+                else if (code.equals(cod_idioma7)) {
+                    cantidad7++;
+                    m++;
+                }
+                else if (code.equals(cod_idioma8)) {
+                    cantidad8++;
+                    m++;
+                }
+                else if (code.equals(cod_idioma9)) {
+                    cantidad9++;
+                    m++;
+                }
+                else if (code.equals(cod_idioma10)) {
+                    cantidad10++;
+                    m++;                }
+                else if (code.equals(cod_idioma11)) {
+                    cantidad11++;
+                    m++;
+                }
+                else if (code.equals(cod_idioma12)) {
+                    cantidad12++;
+                    m++;
+                }
+                else if (code.equals(cod_idioma13)) {
+                    cantidad13++;
+                    m++;
+                }
+                else if (code.equals(cod_idioma14)) {
+                    cantidad14++;
+                    m++;
+                }
+                else if (code.equals(cod_idioma15)) {
+                    cantidad15++;
+                    m++;
+                }
+                else {
                     m++;
                 }
             } catch (Exception e){
                 m++;
             }
         }
-        idiomas.agregar(cantidad,cantidad);
-        idiomas.agregar(cantidad1,cantidad1);
-        idiomas.agregar(cantidad2,cantidad2);
-        idiomas.agregar(cantidad3,cantidad3);
-        idiomas.agregar(cantidad4,cantidad4);
-        idiomas.agregar(cantidad5,cantidad5);
-        idiomas.agregar(cantidad6,cantidad6);
-        idiom.put(cantidad,"eng");
-        idiom.put(cantidad1,"en-US");
-        idiom.put(cantidad2,"en-CA");
-        idiom.put(cantidad3,"en-GB");
-        idiom.put(cantidad4,"spa");
-        idiom.put(cantidad5,"fre");
-        idiom.put(cantidad6,"por");
+        int cantidadE = cantidad + cantidad1 + cantidad2 + cantidad3;
+        idiomas.agregar(cantidadE, cantidadE);
+        idiom.put(cantidadE, "eng");
+        idiomas.agregar(cantidad4, cantidad4);
+        idiom.put(cantidad4, "spa");
+        idiomas.agregar(cantidad5, cantidad5);
+        idiom.put(cantidad5, "fre");
+        idiomas.agregar(cantidad6, cantidad6);
+        idiom.put(cantidad6, "por");
+        idiomas.agregar(cantidad8, cantidad8);
+        idiom.put(cantidad8, "ara");
+        idiomas.agregar(cantidad10, cantidad10);
+        idiom.put(cantidad10, "ger");
+        idiomas.agregar(cantidad11, cantidad11);
+        idiom.put(cantidad11, "jpn");
+        idiomas.agregar(cantidad12, cantidad12);
+        idiom.put(cantidad12, "ind");
         for (int j=0;j<5;j++){
             int cantidadF = idiomas.obtenerYEliminar();
             String cod_idiomaF = idiom.find(cantidadF);

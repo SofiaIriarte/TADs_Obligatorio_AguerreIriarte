@@ -91,7 +91,7 @@ public class ObligatorioImp{
         }
         if (numero==3){
             try {
-                temp.c3();
+                temp.c3(to_read,ratings);
             } catch (KeyYaExiste k) {
                 System.out.print("No es posible realizar esta consulta\n");
             }
