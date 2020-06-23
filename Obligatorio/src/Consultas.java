@@ -16,98 +16,163 @@ public class Consultas {
 
     public void c1(HashImpl<Long,Book> to_read,HashImpl<Long,Book> books) throws KeyYaExiste {
         long tiempoInicio=System.currentTimeMillis();
-        long sizeTo_Read = 912705;
-        String titulo=null;
-        HashImpl<Long, HashImpl<Long,User[]>> hash1 = new HashImpl((int) sizeTo_Read);
-        HeapMax<Long, LinkedList> heap1 = new HeapMax((int) sizeTo_Read);
+        String titulo="";
+        HeapMax<Integer,Book> cons = new HeapMax<>(912705);
+        HashImpl<Long,Integer> consInt = new HashImpl<>(912705);
         long id_book=0;
-        User[] user = new User[2000];
-        Book hola = new Book();
-        for (long i=0;i<10000;i++) {
-            id_book = i;
-            hola = to_read.find(i);
+        for (long i=0;i<10000;i++){
+            int counter=0;
+            try{
+                while (to_read.find(i).getBook_id()==i){
+                    counter++;
+                }
+                cons.agregar(counter,to_read.find(i));
+                consInt.put(to_read.find(i).getBook_id(),counter);
+            } catch (NullPointerException n){
+                break;
+            }
+        }
+        /*long sizeTo_Read = 912705;
+        System.out.print(sizeTo_Read);
+        String titulo=null;
+        HeapMax<Long,Book> to_read1=to_read;
+        HashImpl<Long, User[]> hash1 = new HashImpl((int) sizeTo_Read);
+        HashImpl<Long, LinkedList> heap1 = new HashImpl<>((int) sizeTo_Read);
+        HeapMax<Integer, Integer> heap2 = new HeapMax((int) sizeTo_Read);
+        HashImpl<Long, Integer> heap3 = new HashImpl((int) sizeTo_Read);
+        long id_book=0;
+        while (sizeTo_Read>1) {
+            Book hola=to_read1.obtenerYEliminar();
+            id_book =hola.getBook_id();
+            User[] user = new User[2000];
             try{
                 user = hola.getReserved_to_read();
             } catch (Exception e){
-                user=null;
+                hola.setReserved_to_read(user);
             }
-            HashImpl<Long,User[]> users = new HashImpl<>(10000);
-            users.put(i,user);
-            hash1.put(i,users);
-            users = hash1.find(i);
+            //HashImpl<Long,User[]> users = new HashImpl(10000);
+            //users.put((long)i,user);
+            //hash1.put((long)i,user);
+            int valueSize=0;
+            LinkedList<Integer> values = new LinkedList();
+            values.addFirst((int) id_book);
             try {
-                users.put(i,user);
-                hash1.put(id_book,users);
-            }
-            catch (Exception e){
-                break;
-            }
-            try {
-                heap1.agregar(id_book,users);
-            } catch (KeyYaExiste k){
-                System.out.print("Maaaaaaaaaaaaaaal");
-            }
-
-        }
-        /*for (int l=0;l<9;l++){
-            LinkedList datos = heap1.obtenerYEliminar();
-            id_book = (long) datos.get(0);
-            int cantidad = datos.getSize()-1;
-            for (long i=0;i<10000;i++){
                 try {
-                    if (id_book==i){
-                        titulo=books.find(i).getTitle();
-                    }
+                    values.add(user.length);
                 } catch (Exception e){
-                    break;
+                    values.add(0);
                 }
+                heap1.put(id_book,values);
+                valueSize =values.getSize()-1;
+            } catch (Exception k){
+                //id_book=heap2.obtenerYEliminar();
+                //valueSize=heap1.find(id_book).getSize()-1;
+                valueSize++;
+                //heap2.agregar(valueSize, (int) id_book);
             }
-            System.out.println("Id del libro: " + id_book + " Titulo: " + titulo + " Cantidad: " + cantidad);
+            heap2.agregar(valueSize,(int)id_book);
+            heap3.put(id_book,valueSize);
+            sizeTo_Read--;
         }*/
+        try{
+            for (int l=0;l<9;l++){
+                id_book=cons.obtenerYEliminar().getBook_id();
+                int cantidad = (int) consInt.find(id_book);
+                try {
+                    titulo=books.find(id_book).getTitle();
+                } catch (Exception e){
+                    titulo="";
+                }
+                System.out.println("Id del libro: " + id_book + " Titulo: " + titulo + " Cantidad: " + cantidad);
+            }
+        } catch (Exception e){
+            System.out.print("La cantidad de reservas es menor a la solicitada");
+        }
         long tiempoFin=System.currentTimeMillis();
         long tiempo= tiempoFin-tiempoInicio;
         System.out.print("Tiempo de ejecucion de la consulta: "+tiempo+"\n");
     }
 
-    public void c2(HashImpl<Long,Book> to_read,HashImpl<Long,Book> books, LinkedList<Long> id_books) throws KeyYaExiste {
+    public void c2(HashImpl<Long,Book> to_read,HashImpl<Long,Book> books) throws KeyYaExiste {
         long tiempoInicio=System.currentTimeMillis();
-        String titulo=null;
-        HashImpl<Long,Book> books1 = books;
-        HashImpl<Long,Book> to_read1 = to_read;
-        int sizeTo_Read = 912705;
-        HeapMax<Long, LinkedList> heap2 = new HeapMax(sizeTo_Read);
-        for (int i=0;i<sizeTo_Read;i++){
-            int counter=1;
-            Book hola = (Book) to_read1.find(id_books.get(i));
-            long id_book= hola.getBook_id();
-            LinkedList datos = new LinkedList();
-            datos.addFirst(id_book);
-            datos.add(counter);
-            try {
-                heap2.agregar(id_book, datos);
-            } catch (KeyYaExiste k){
-                LinkedList newDatos = heap2.obtenerYEliminar();
-                long id_bookNew = (long) newDatos.get(0);
-                int counterNew = (int) newDatos.get(1);
-                counterNew++;
-                LinkedList datosNew=new LinkedList<>();
-                datosNew.addFirst(id_bookNew);
-                datos.add(counterNew);
-                heap2.agregar(id_bookNew,datosNew);
-            }
-        }
-        for (int l=0;l<19;l++){
-            LinkedList<Integer> datos = heap2.obtenerYEliminar();
-            long id_book = datos.get(0);
-            int cantidad = datos.get(1);
-            for (int i=0;i<10000;i++){
-                if (id_book==id_books.get(i)){//hola1.getBook_id()
-                    Book hola1 = (Book) books1.find(id_books.get(i));
-                    titulo=hola1.getTitle();
-                    System.out.println("Id del libro:" + id_book + "Titulo:" + titulo + "Cantidad:" + cantidad);
+        String titulo="";
+        HeapMax<Integer,Book> cons = new HeapMax<>(912705);
+        HashImpl<Long,Integer> consInt = new HashImpl<>(912705);
+        long id_book=0;
+        for (long i=0;i<10000;i++){
+            int counter=0;
+            try{
+                while (to_read.find(i).getBook_id()==i){
+                    counter++;
                 }
+                cons.agregar(counter,to_read.find(i));
+                consInt.put(to_read.find(i).getBook_id(),counter);
+            } catch (NullPointerException n){
+                break;
             }
         }
+        try{
+            for (int l=0;l<19;l++){
+                id_book=cons.obtenerYEliminar().getBook_id();
+                int cantidad = (int) consInt.find(id_book);
+                try {
+                    titulo=books.find(id_book).getTitle();
+                } catch (Exception e){
+                    titulo="";
+                }
+                System.out.println("Id del libro: " + id_book + " Titulo: " + titulo + " Cantidad: " + cantidad);
+            }
+        } catch (Exception e){
+            System.out.print("La cantidad de reservas es menor a la solicitada");
+        }
+        /*long tiempoInicio=System.currentTimeMillis();
+        String titulo=null;
+        long sizeTo_Read= 912705;
+        HashImpl<Long, HashImpl<Long,User[]>> hash1 = new HashImpl((int) sizeTo_Read);
+        HashImpl<Long, LinkedList> heap2 = new HashImpl((int) sizeTo_Read);
+        long id_book=0;
+        User[] user = new User[2000];
+        Book hola = new Book();
+        HeapMax<Integer, Integer> heap1 = new HeapMax((int) sizeTo_Read);
+
+        for (int i=0;i<sizeTo_Read;i++) {
+            hola=to_read.find((long)i);
+            id_book =hola.getBook_id();
+            try{
+                user = hola.getReserved_to_read();
+            } catch (Exception e){
+                user=new User[0];
+            }
+            HashImpl<Long,User[]> users = new HashImpl<>(10000);
+            users.put((long)i,user);
+            hash1.put((long)i,users);
+            try {
+                LinkedList<Integer> values = new LinkedList();
+                values.addFirst(i);
+                try {
+                    values.add(users.find((long) i).length);
+                } catch (Exception e){
+                    values.add(0);
+                }
+                heap2.put((long)i,values);
+                int valueSize =values.getSize()-1;
+                heap1.agregar(valueSize, i);
+            } catch (KeyYaExiste k){
+                System.out.print("55555555555");
+                break;
+            }
+        }
+
+        for (int l=0;l<19;l++){
+            id_book=heap1.obtenerYEliminar();
+            int cantidad = (int) heap2.find(id_book).get(0);
+            try {
+                titulo=books.find(id_book).getTitle();
+            } catch (Exception e){
+                break;
+            }
+            System.out.println("Id del libro:" + id_book + "Titulo:" + titulo + "Cantidad:" + cantidad);
+        }*/
         long tiempoFin=System.currentTimeMillis();
         long tiempo= tiempoFin-tiempoInicio;
         System.out.print("Tiempo de ejecucion de la consulta:"+tiempo);
@@ -179,8 +244,9 @@ public class Consultas {
         int cantidad=0;
         HeapMax<String,Integer> idiomas = new HeapMax<>(sizeTo_Read);
         for (int i=0;i<sizeTo_Read;i++){
-            cod_idioma = to_read.find((long) i).getLanguage_code();
-            cantidad = to_read.find((long) i).getReserved_to_read().length;
+            Book algo = to_read.find((long)i);
+            cod_idioma = algo.getLanguage_code();
+            cantidad = algo.getReserved_to_read().length;
             try {
                 idiomas.agregar(cod_idioma,cantidad);
             } catch (KeyYaExiste k) {

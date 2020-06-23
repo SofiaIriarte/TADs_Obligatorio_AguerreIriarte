@@ -1,5 +1,6 @@
 import tads.Hash.Hash;
 import tads.Hash.HashImpl;
+import tads.Heap.HeapMax;
 import tads.LinkedList.LinkedList;
 
 import java.io.BufferedReader;
@@ -52,19 +53,14 @@ public class CargaDeDatos {
                         position++;
                     }
                     Book libro = new Book(Long.parseLong(datos[0]), datos[1], authors, Integer.parseInt(datos[i]), datos[i + 1], datos[i + 2], datos[i + 3], datos[i+4]);
-                    books.put(libro.getBook_id(), libro);
-                    contador++;
-                }
-                else {
-                    String[] datos = identificadorDeComas(line);
-                    Author[] authors = new Author[datos.length - 7];//Resto 7 porque es la cantidad de datos que tienen cantidad fija. (No son autores)
-                    int position = 0;
-                    int i;
-                    for (i = 2; i < 2 + authors.length; i++) {
-                        authors[position] = new Author(datos[i]);
-                        position++;
-                    }
-                    Book libro = new Book(Long.parseLong(datos[0]), datos[1], authors, 0000, datos[i + 1], datos[i + 2], datos[i + 3], datos[i + 4]);
+                    libro.setBook_id(Long.parseLong(datos[0]));
+                    libro.setIsbn(datos[1]);
+                    libro.setAuthor(authors);
+                    libro.setOriginal_publication_year(Integer.parseInt(datos[i]));
+                    libro.setOriginal_title(datos[i + 1]);
+                    libro.setTitle(datos[i + 2]);
+                    libro.setLanguage_code(datos[i + 3]);
+                    libro.setImage_url(datos[i + 4]);
                     books.put(libro.getBook_id(), libro);
                     contador++;
                 }
@@ -142,24 +138,29 @@ public class CargaDeDatos {
                     User user=new User(id_user);
                     user.setUser_id(id_user);
                     long book_id= Long.parseLong(datos[1]);
-                    for (int i=0;i<10000;i++) {
+                    for (int i=0;i<9999;i++) {
                         try{
-                            if (book_id==book.find((long)i).getBook_id()){
-                                User[] users = book.find((long)i).getReserved_to_read();
-                                User[] userList = new User[users.length];
-                                for (int l=0;l<users.length;l++){
-                                    userList[i]=users[i];
+                            if (book_id==book.find((long)i).getBook_id()) {
+                                try {
+                                    User[] users = book.find((long)i).getReserved_to_read();
+                                    User[] userList = new User[users.length];
+                                    for (int l=0;l<users.length;l++){
+                                        userList[i]=users[i];
+                                    }
+                                    userList[-1]=user;
+                                    book.find((long)i).setReserved_to_read(userList);
+                                } catch (NullPointerException n) {
+                                    User[] userList = new User[1000];
+                                    userList[0] = user;
+                                    book.find((long)i).setReserved_to_read(userList);
                                 }
-                                userList[-1]=user;
-                                book.find(book_id).setReserved_to_read(userList);
-                                Book bookAdd = book.find((long)i);
-                                to_read.put(book_id,bookAdd);
                             }
+                            to_read.put(book_id,book.find((long)i));
+                            contador++;
                         } catch (NullPointerException n){
                             break;
                         }
                     }
-                    contador++;
                 }
                 line=br.readLine();
             }

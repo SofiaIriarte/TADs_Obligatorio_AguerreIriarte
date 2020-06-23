@@ -35,6 +35,7 @@ public class ObligatorioImp implements Obligatorio {
             CargaDeDatos temp = new CargaDeDatos();
             id_books=temp.id_books();
             books = temp.cargaBooks();
+            //CargaDeDatos temp1 = new CargaDeDatos();
             ratings = temp.cargaRatings(books);
             to_read = temp.cargaTo_Read(books);
             long tiempoFin = System.currentTimeMillis();
@@ -78,7 +79,7 @@ public class ObligatorioImp implements Obligatorio {
                 consultas();
             case 2:
                 try {
-                    temp.c2(to_read, books,id_books);
+                    temp.c2(to_read, books);
                 } catch (KeyYaExiste k) {
                     System.out.print("No es posible realizar esta consulta\n");
                 }
